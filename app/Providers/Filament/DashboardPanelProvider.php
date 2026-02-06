@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Dashboard as PagesDashboard;
 use Filament\Http\Middleware\Authenticate;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -21,6 +22,12 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
+use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
+use Filament\Actions\Action;
+use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
+use AchyutN\FilamentLogViewer\FilamentLogViewer;
+
+
 
 
 class DashboardPanelProvider extends PanelProvider
@@ -39,7 +46,7 @@ class DashboardPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
-                Dashboard::class,
+                PagesDashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
@@ -59,13 +66,24 @@ class DashboardPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make(),
-                FilamentApexChartsPlugin::make()
-
+                FilamentApexChartsPlugin::make(),
+                FilamentEditProfilePlugin::make()
+                    ->setTitle('Mi Perfil')
+                    ->setIcon('heroicon-o-user-circle')
+                    ->shouldShowDeleteAccountForm(false)
+                    ->setNavigationGroup('Mis datos'),
+                FilamentLogViewer::make(),
             ])
             ->authMiddleware([
                 Authenticate::class,
             ])
             ->passwordReset()
+            ->userMenuItems([
+                'profile' => Action::make('profile')
+                    ->label(fn() => auth()->user()->name)
+                    ->url(fn(): string => EditProfilePage::getUrl())
+                    ->icon('heroicon-m-user-circle'),
+            ])
             ->databaseNotifications();
     }
 }

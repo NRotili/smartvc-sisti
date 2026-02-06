@@ -10,6 +10,7 @@ use App\Filament\Resources\Camaras\Schemas\CamaraForm;
 use App\Filament\Resources\Camaras\Tables\CamarasTable;
 use App\Models\Camara;
 use BackedEnum;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -70,23 +71,32 @@ class CamaraResource extends Resource
                 ComponentsSection::make('Cámara en vivo')
                     ->schema([
                         ImageEntry::make('url_imagen')
-                            ->label('')
+                            ->hiddenLabel()
                             ->extraAttributes(['class' => 'justify-center'])
                             ->size('full'),
                     ])->columnSpan(1),
-                ComponentsSection::make('Zona de la intervención')
+                ComponentsSection::make('Ubicación de la cámara')
                     ->schema([
                         MapEntry::make('location')
-                            ->formatStateUsing(fn(Camara $record) => [
-                                'lat' => $record->lat,
-                                'lng' => $record->lng,
-                            ])
+                            ->hiddenLabel()
+                            ->defaultLocation(
+                                latitude: function ($record) {
+                                    Debugbar::info('MapEntry lat', $record?->lat);
+                                    return $record?->lat ?? 0;
+                                },
+                                longitude: function ($record) {
+                                    Debugbar::info('MapEntry lng', $record?->lng);
+                                    return $record?->lng ?? 0;
+                                },
+                            )
                             ->draggable(false)
                             ->zoom(15)
                             ->minZoom(0)
                             ->maxZoom(28)
                             ->tilesUrl('https://tile.openstreetmap.de/{z}/{x}/{y}.png')
                             ->detectRetina(true)
+
+
                     ])->columnSpan(1),
 
                 ComponentsSection::make('Información de la cámara')
