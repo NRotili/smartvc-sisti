@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'digifort' => [
+        'user' => env('DIGIFORT_USER'),
+        'password' => env('DIGIFORT_PASSWORD'),
+    ],
+
 ];
