@@ -9,6 +9,7 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
@@ -19,16 +20,24 @@ class IntervencionesTable
         return $table
             ->columns([
                 TextColumn::make('fecha_hora')
+                    ->label('Fecha y Hora')
                     ->dateTime()
                     ->sortable(),
+                //Dscripción html y que no se escape
+                TextColumn::make('descripcion')
+                    ->label('Descripción')
+                    ->html()
+                    ->wrap(),
                 IconColumn::make('estado')
-                    ->boolean(),
-                TextColumn::make('categoria_id')
-                    ->numeric()
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('categoria.nombre')
+                    ->label('Categoría')
                     ->sortable(),
-                TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
+                TextColumn::make('user.name')
+                    ->label('Usuario')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -43,6 +52,12 @@ class IntervencionesTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('categoria_id')
+                    ->label('Categoría')
+                    ->relationship('categoria', 'nombre'),
+                //between fecha_hora
+
+                
                 TrashedFilter::make(),
             ])
             ->recordActions([

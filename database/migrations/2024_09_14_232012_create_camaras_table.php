@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('descripcion');
-            $table->foreignId('tipo_id')->constrained('tipo_camaras');
+            $table->foreignId('tipo_id')->nullable()->constrained('tipo_camaras');
             $table->string('lat')->nullable();
             $table->string('lng')->nullable();
             $table->bigInteger('cantIntervenciones')->nullable();
-            $table->foreignId('server_id')->constrained('servidores');
+            $table->foreignId('server_id')->nullable()->constrained('servidores');
             $table->boolean('status');
             $table->boolean('publicada')->default(1);
             $table->boolean('grabando')->default(1);

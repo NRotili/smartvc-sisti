@@ -19,7 +19,7 @@
         crossorigin=""></script>
 
     <script>
-        const api_url = 'http://smartvc.intranet.villaconstitucion.gob.ar/api/monitoreo/camaras';
+        const api_url = "{{ config('app.url') }}/api/monitoreo/camaras";
 
         var domos = L.layerGroup();
         var fijas = L.layerGroup();
@@ -32,8 +32,10 @@
             var markers = [];
 
             for (const camera of data.data) {
-                markers.push([camera.name, camera.lat, camera.lng, camera.type, camera.status])
+                markers.push([camera.nombre, camera.lat, camera.lng, camera.tipo_id, camera.status])
             }
+
+            
 
             const domeIcon = L.icon({
                 iconUrl: "{{ asset('img/dome.png') }}",
@@ -65,7 +67,7 @@
                 let icon = ""
 
                 if (markers[i][4] === 1) {
-                    if (markers[i][3] === 1) {
+                    if (markers[i][3] === 2) {
                         icon = fixedIcon
                         var marker = L.marker([markers[i][1], markers[i][2]], {
                             icon: icon
@@ -77,7 +79,7 @@
                         }).bindPopup("Nombre: " + markers[i][0]).addTo(domos);
                     }
                 } else {
-                    if (markers[i][3] === 1) {
+                    if (markers[i][3] === 2) {
                         icon = fixedOutIcon
                         var marker = L.marker([markers[i][1], markers[i][2]], {
                                 icon: icon
@@ -99,7 +101,7 @@
         getISS();
 
         var mbAttr =
-            'Dirección de Tecnología y Sistemas - Municipio de Villa Constitución';
+            'Desarrollado por SISTI';
         var mbUrl =
             'http://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
