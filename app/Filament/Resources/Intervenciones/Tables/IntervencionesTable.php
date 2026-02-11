@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Intervenciones\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
@@ -52,19 +53,29 @@ class IntervencionesTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
+            ])->defaultSort('fecha_hora', 'desc')
             ->filters([
                 SelectFilter::make('categoria_id')
                     ->label('Categoría')
                     ->relationship('categoria', 'nombre'),
                 //between fecha_hora
 
-                
+
                 TrashedFilter::make(),
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(function ($record) {
+                        $user = auth()->user();
+
+                        return (
+                                $record->created_at->equalTo($record->updated_at)
+                                && $record->user_id === $user->id
+                            )
+                            || $user->hasRole('Supervisor de Monitoreo');
+                    }),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

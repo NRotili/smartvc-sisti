@@ -40,4 +40,11 @@ return [
         'password' => env('DIGIFORT_PASSWORD'),
     ],
 
+    'telegram' => [
+        'canal_datacenter' => env('TELEGRAM_BOT_TOKEN'),
+        'canal_monitoreo_intervenciones' => env('TELEGRAM_MONITOREO_INTERVENCIONES'),
+        'canal_monitoreo_fallas' => env('TELEGRAM_MONITOREO_FALLAS'),
+        'canal_agua_presion' => env('TELEGRAM_AGUA_PRESION'),
+    ],
+
 ];
