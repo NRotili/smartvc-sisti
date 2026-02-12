@@ -20,4 +20,17 @@ class EditIntervencione extends EditRecord
             RestoreAction::make(),
         ];
     }
+
+    protected function authorizeAccess(): void
+    {
+        abort_unless(
+            $this->record->canBeEditedBy(auth()->user()),
+            403
+        );
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

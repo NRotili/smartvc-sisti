@@ -17,6 +17,9 @@ use UnitEnum;
 
 class DesperfectosCamaraResource extends Resource
 {
+
+protected static ?string $modelLabel = 'Falla de Cámara';
+protected static ?string $pluralModelLabel = 'Fallas de Cámaras';
     protected static ?string $model = DesperfectosCamara::class;
     protected static UnitEnum|string|null $navigationGroup = 'Monitoreo';
     

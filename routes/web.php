@@ -38,7 +38,7 @@ Route::get('telegram-agua-presion', function () {
         if ($presion && ($valorDePresion <= $sensor->presion_minima || $valorDePresion >= $sensor->presion_maxima)) {
 
             Telegram::sendMessage([
-                'chat_id' => 831187074,
+                'chat_id' => config('services.telegram.canal_agua_presion'),
                 'text' => "⚠ *ALERTA DE PRESIÓN* ⚠ \n\n*Sensor:* $sensor->nombre \n*Presión:* " . $valorDePresion,
                 'parse_mode' => 'Markdown'
             ]);

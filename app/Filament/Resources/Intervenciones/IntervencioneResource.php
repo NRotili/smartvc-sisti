@@ -29,6 +29,10 @@ use Symfony\Component\ErrorHandler\Debug;
 
 class IntervencioneResource extends Resource
 {
+    //Breadcrumbs
+    protected static ?string $modelLabel = 'Intervención';
+    protected static ?string $pluralModelLabel = 'Intervenciones';
+
     protected static ?string $model = Intervencione::class;
     protected static UnitEnum|string|null $navigationGroup = 'Monitoreo';
     protected static ?string $navigationLabel = 'Intervenciones';
@@ -59,8 +63,8 @@ class IntervencioneResource extends Resource
     {
         return [
             'index' => ListIntervenciones::route('/'),
-            'view' => ViewIntervencione::route('/{record}'),
             'create' => CreateIntervencione::route('/create'),
+            'view' => ViewIntervencione::route('/{record}'),
             'edit' => EditIntervencione::route('/{record}/edit'),
         ];
     }

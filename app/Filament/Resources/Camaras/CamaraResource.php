@@ -24,6 +24,8 @@ use Filament\Schemas\Components\Section as ComponentsSection;
 
 class CamaraResource extends Resource
 {
+protected static ?string $modelLabel = 'Cámara';
+protected static ?string $pluralModelLabel = 'Cámaras';
     protected static ?string $model = Camara::class;
     protected static UnitEnum|string|null $navigationGroup = 'Monitoreo';
 
@@ -31,6 +33,18 @@ class CamaraResource extends Resource
     protected static ?string $navigationLabel = 'Cámaras';
     protected static ?string $recordTitleAttribute = 'Cámaras';
     protected static ?int $navigationSort = 1;
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'synchronize', // 👈 agregado
+        ];
+    }
 
     public static function form(Schema $schema): Schema
     {

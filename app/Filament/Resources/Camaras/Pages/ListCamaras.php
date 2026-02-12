@@ -98,7 +98,15 @@ class ListCamaras extends ListRecords
                             Debugbar::error($th);
                         }
                     }
-                }),
+                })
+                ->authorize(
+                    fn() =>
+                    auth()->user()->hasAnyRole([
+                        'super_admin',
+                        'Supervisor de Monitoreo',
+                        'Técnico de Monitoreo',
+                    ])
+                )
         ];
     }
 }

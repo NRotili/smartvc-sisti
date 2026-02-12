@@ -15,13 +15,16 @@ use Filament\Schemas\Components\Section as ComponentsSection;
 class ViewIntervencione extends ViewRecord
 {
     protected static string $resource = IntervencioneResource::class;
+    protected static ?string $title = 'Detalle de la intervención';
 
     protected function getHeaderActions(): array
     {
         return [
-            EditAction::make(),
+            EditAction::make()
+                ->authorize(
+                    fn() =>
+                    $this->record->canBeEditedBy(auth()->user())
+                ),
         ];
     }
-
-   
 }

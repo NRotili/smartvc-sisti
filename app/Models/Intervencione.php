@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Observers\NotificacioneObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[ObservedBy(NotificacioneObserver::class)]
 class Intervencione extends Model
 {
     use SoftDeletes;
@@ -17,7 +20,7 @@ class Intervencione extends Model
         'estado',
     ];
 
-      //categoria
+    //categoria
     public function categoria()
     {
         return $this->belongsTo(CategoriasIntervencione::class);
@@ -39,5 +42,14 @@ class Intervencione extends Model
     public function conocimientos()
     {
         return $this->hasMany(ConocimientoIntervencione::class);
+    }
+
+    public function canBeEditedBy(User $user): bool
+    {
+        return (
+                $this->created_at->equalTo($this->updated_at)
+                && $this->user_id === $user->id
+            )
+            || $user->hasRole('Supervisor de Monitoreo');
     }
 }

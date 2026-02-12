@@ -66,15 +66,7 @@ class IntervencionesTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make()
-                    ->visible(function ($record) {
-                        $user = auth()->user();
-
-                        return (
-                                $record->created_at->equalTo($record->updated_at)
-                                && $record->user_id === $user->id
-                            )
-                            || $user->hasRole('Supervisor de Monitoreo');
-                    }),
+                    ->authorize(fn($record) => $record->canBeEditedBy(auth()->user())),
                 DeleteAction::make(),
             ])
             ->toolbarActions([
