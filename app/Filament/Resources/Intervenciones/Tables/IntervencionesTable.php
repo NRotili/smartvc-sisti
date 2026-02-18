@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Intervenciones\Tables;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -64,10 +65,12 @@ class IntervencionesTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make()
-                    ->authorize(fn($record) => $record->canBeEditedBy(auth()->user())),
-                DeleteAction::make(),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make()
+                        ->authorize(fn($record) => $record->canBeEditedBy(auth()->user())),
+                    DeleteAction::make()
+                ])
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

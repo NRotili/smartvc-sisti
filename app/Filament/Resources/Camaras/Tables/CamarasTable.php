@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Camaras\Tables;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -17,6 +18,7 @@ use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class CamarasTable
 {
@@ -30,7 +32,7 @@ class CamarasTable
                 TextColumn::make('descripcion')
                     ->label('Descripción')
                     ->searchable(),
-                    //tipo de cámara
+                //tipo de cámara
                 TextColumn::make('tipo.tipo')
                     ->label('Tipo')
                     ->searchable()
@@ -86,10 +88,12 @@ class CamarasTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-                DeleteAction::make(),
-                RestoreAction::make(),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make(),
+                    RestoreAction::make(),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -100,13 +104,17 @@ class CamarasTable
                         ->requiresConfirmation()
                         ->action(function (Collection $records) {
                             $records->each(fn(Model $record) => $record->update(['mantenimiento' => !$record->mantenimiento]));
-                        }),
+                        })
+                        ->icon('heroicon-o-wrench')
+                        ->authorize(fn() => Auth::user()->can('Mantenimiento:Camara')),
                     BulkAction::make('cambiarPublicada')
                         ->label('Publicada')
                         ->requiresConfirmation()
                         ->action(function (Collection $records) {
                             $records->each(fn(Model $record) => $record->update(['publicada' => !$record->publicada]));
-                        }),
+                        })
+                        ->icon('heroicon-o-eye')
+                        ->authorize(fn() => Auth::user()->can('Publicar:Camara')),
                 ]),
             ]);
     }

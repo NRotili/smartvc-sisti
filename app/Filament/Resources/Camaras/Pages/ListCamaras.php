@@ -10,6 +10,7 @@ use Barryvdh\Debugbar\Facades\Debugbar;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
@@ -99,14 +100,7 @@ class ListCamaras extends ListRecords
                         }
                     }
                 })
-                ->authorize(
-                    fn() =>
-                    auth()->user()->hasAnyRole([
-                        'super_admin',
-                        'Supervisor de Monitoreo',
-                        'Técnico de Monitoreo',
-                    ])
-                )
+                ->authorize(fn() => Auth::user()->can('Synchronize:Camara')),
         ];
     }
 }

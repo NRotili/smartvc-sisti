@@ -1,4 +1,4 @@
-<x-filament-panels::page>
+{{-- <x-filament-panels::page>
     <div id="map"></div>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
@@ -142,4 +142,4 @@
         //     getISS();
         // }
     </script>
-</x-filament-panels::page>
+</x-filament-panels::page> --}}

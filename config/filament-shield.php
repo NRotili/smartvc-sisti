@@ -21,7 +21,7 @@ return [
             'pages' => true,
             'widgets' => true,
             'resources' => true,
-            'custom_permissions' => false,
+            'custom_permissions' => true,
         ],
     ],
 
@@ -226,7 +226,12 @@ return [
     |
     */
 
-    'custom_permissions' => [],
+    'custom_permissions' => [
+        'Synchronize:Camara' => 'Sincronizar cámaras',
+        'Mantenimiento:Camara' => 'Mantenimiento de cámaras',
+        'Publicar:Camara' => 'Publicar/Ocultar cámaras',
+        'asignarFalla:DesperfectoCamara' => 'Asignar falla a desperfectos de cámaras',
+    ],
 
     /*
     |--------------------------------------------------------------------------

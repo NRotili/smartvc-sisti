@@ -11,12 +11,13 @@ use App\Filament\Resources\Camaras\Tables\CamarasTable;
 use App\Models\Camara;
 use BackedEnum;
 use Barryvdh\Debugbar\Facades\Debugbar;
+use EduardoRibeiroDev\FilamentLeaflet\Infolists\MapEntry;
+use EduardoRibeiroDev\FilamentLeaflet\Support\Markers\Marker;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
-use Dotswan\MapPicker\Infolists\MapEntry;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -24,8 +25,8 @@ use Filament\Schemas\Components\Section as ComponentsSection;
 
 class CamaraResource extends Resource
 {
-protected static ?string $modelLabel = 'Cámara';
-protected static ?string $pluralModelLabel = 'Cámaras';
+    protected static ?string $modelLabel = 'Cámara';
+    protected static ?string $pluralModelLabel = 'Cámaras';
     protected static ?string $model = Camara::class;
     protected static UnitEnum|string|null $navigationGroup = 'Monitoreo';
 
@@ -92,23 +93,31 @@ protected static ?string $pluralModelLabel = 'Cámaras';
                 ComponentsSection::make('Ubicación de la cámara')
                     ->schema([
                         MapEntry::make('location')
-                            ->hiddenLabel()
-                            ->defaultLocation(
-                                latitude: function ($record) {
-                                    Debugbar::info('MapEntry lat', $record?->lat);
-                                    return $record?->lat ?? 0;
-                                },
-                                longitude: function ($record) {
-                                    Debugbar::info('MapEntry lng', $record?->lng);
-                                    return $record?->lng ?? 0;
-                                },
-                            )
-                            ->draggable(false)
-                            ->zoom(15)
-                            ->minZoom(0)
-                            ->maxZoom(28)
-                            ->tilesUrl('https://tile.openstreetmap.de/{z}/{x}/{y}.png')
-                            ->detectRetina(true)
+                            ->latitudeFieldName('lat')
+                            ->longitudeFieldName('lng')
+                            ->height(284)
+                            ->zoom(10)
+                            ->pickMarker(fn(Marker $marker) => $marker->red())
+                            ->static()    // Disable interactions (enabled by default)
+                            ->columnSpanFull()
+                        // MapEntry::make('location')
+                        //     ->hiddenLabel()
+                        //     ->defaultLocation(
+                        //         latitude: function ($record) {
+                        //             Debugbar::info('MapEntry lat', $record?->lat);
+                        //             return $record?->lat ?? 0;
+                        //         },
+                        //         longitude: function ($record) {
+                        //             Debugbar::info('MapEntry lng', $record?->lng);
+                        //             return $record?->lng ?? 0;
+                        //         },
+                        //     )
+                        //     ->draggable(false)
+                        //     ->zoom(15)
+                        //     ->minZoom(0)
+                        //     ->maxZoom(28)
+                        //     ->tilesUrl('https://tile.openstreetmap.de/{z}/{x}/{y}.png')
+                        //     ->detectRetina(true)
 
 
                     ])->columnSpan(1),

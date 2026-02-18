@@ -2,18 +2,21 @@
 
 namespace App\Filament\Resources\DesperfectosCamaras\Tables;
 
+use App\Models\DesperfectosCamara;
 use Dom\Text;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
 
 class DesperfectosCamarasTable
 {
-    
+
     public static function configure(Table $table): Table
     {
         return $table
@@ -54,7 +57,7 @@ class DesperfectosCamarasTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                TrashedFilter::make(),           
+                TrashedFilter::make(),
             ])
             ->recordActions([
                 EditAction::make(),
@@ -63,8 +66,23 @@ class DesperfectosCamarasTable
                 BulkActionGroup::make([
                     BulkAction::make('asignarFalla')
                         ->label('Asignar Falla')
-                        ->action(fn (array $records) => redirect()->route('filament.resources.desperfectos-camaras.asignar-falla', ['record' => $records]))
-                        ->icon('heroicon-o-wrench'),
+                        ->action(fn(array $records) => redirect()->route('filament.resources.desperfectos-camaras.asignar-falla', ['record' => $records]))
+                        ->icon('heroicon-o-wrench')
+                        ->form([
+                            Select::make('falla_id')
+                                ->label('Falla')
+                                ->relationship('fallaCamara', 'tipo_falla') // 👈 si tenés relación
+                                ->searchable()
+                                ->preload()
+                                ->required(),
+                        ])
+                        ->action(function (Collection $records, array $data) {
+                            $records->each->update(['falla_camara_id' => $data['falla_id']]);
+                        })
+                        ->successNotificationTitle("Falla asignada correctamente a los desperfectos seleccionados.")
+                        ->failureNotificationTitle("Error al asignar la falla a los desperfectos seleccionados.")
+                        ->deselectRecordsAfterCompletion()
+                        ->authorize(fn() => Auth::user()->can('asignarFalla:DesperfectoCamara')),
                     DeleteBulkAction::make(),
                 ]),
             ]);
