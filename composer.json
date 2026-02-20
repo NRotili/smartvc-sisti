@@ -9,6 +9,8 @@
         "php": "^8.2",
         "achyutn/filament-log-viewer": "^1.7",
         "bezhansalleh/filament-shield": "^4.0",
+        "codedge/laravel-fpdf": "^1.12",
+        "codewithkyrian/filament-date-range": "^2.2",
         "dotswan/filament-map-picker": "^2.1",
         "eduardoribeirodev/filament-leaflet": "^4.5",
         "filament/filament": "^4.0",

@@ -231,6 +231,7 @@ return [
         'Mantenimiento:Camara' => 'Mantenimiento de cámaras',
         'Publicar:Camara' => 'Publicar/Ocultar cámaras',
         'asignarFalla:DesperfectoCamara' => 'Asignar falla a desperfectos de cámaras',
+        'pdfConcejo:Reportes' => 'Exportar PDF para concejo',
     ],
 
     /*

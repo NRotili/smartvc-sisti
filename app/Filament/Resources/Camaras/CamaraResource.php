@@ -93,33 +93,14 @@ class CamaraResource extends Resource
                 ComponentsSection::make('Ubicación de la cámara')
                     ->schema([
                         MapEntry::make('location')
+                            ->hiddenLabel()
                             ->latitudeFieldName('lat')
                             ->longitudeFieldName('lng')
                             ->height(284)
-                            ->zoom(10)
+                            ->zoom(17)
                             ->pickMarker(fn(Marker $marker) => $marker->red())
                             ->static()    // Disable interactions (enabled by default)
                             ->columnSpanFull()
-                        // MapEntry::make('location')
-                        //     ->hiddenLabel()
-                        //     ->defaultLocation(
-                        //         latitude: function ($record) {
-                        //             Debugbar::info('MapEntry lat', $record?->lat);
-                        //             return $record?->lat ?? 0;
-                        //         },
-                        //         longitude: function ($record) {
-                        //             Debugbar::info('MapEntry lng', $record?->lng);
-                        //             return $record?->lng ?? 0;
-                        //         },
-                        //     )
-                        //     ->draggable(false)
-                        //     ->zoom(15)
-                        //     ->minZoom(0)
-                        //     ->maxZoom(28)
-                        //     ->tilesUrl('https://tile.openstreetmap.de/{z}/{x}/{y}.png')
-                        //     ->detectRetina(true)
-
-
                     ])->columnSpan(1),
 
                 ComponentsSection::make('Información de la cámara')
