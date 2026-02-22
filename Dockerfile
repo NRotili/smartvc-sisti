@@ -1,6 +1,5 @@
 FROM php:8.3-apache
 
-# Instalar dependencias del sistema y extensiones de PHP necesarias para Laravel/Filament
 RUN apt-get update && apt-get install -y \
     libicu-dev \
     libpng-dev \
@@ -8,7 +7,10 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     git \
-    && docker-php-ext-install intl gd bcmath zip pdo_mysql opcache
+    --no-install-recommends \
+    && docker-php-ext-install intl gd bcmath zip pdo_mysql opcache \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Configurar Apache: habilitar mod_rewrite y cambiar el DocumentRoot a /public
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
