@@ -1,0 +1,30 @@
+services:
+  app:
+    build: .
+    container_name: smartvc_app
+    restart: always
+    env_file: .env
+    # No exponemos el 8000 al exterior, solo a Nginx internamente
+    networks:
+      - laravel_internal
+      - shared_db_network 
+
+  web:
+    image: nginx:alpine
+    container_name: smartvc_nginx
+    restart: always
+    ports:
+      - "81:80" # O el puerto que prefieras (ej. 8080:80)
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
+    networks:
+      - laravel_internal
+
+networks:
+  laravel_internal:
+    driver: bridge
+  shared_db_network:
+    external: true
+    name: shared_db_network # El nombre exacto que pusiste en el stack de MySQL
