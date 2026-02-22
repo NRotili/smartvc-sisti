@@ -1,31 +1,17 @@
 services:
-  # El motor de la aplicación (Octane)
   app:
     build: .
-    container_name: smartvc_app
-    restart: always
-    env_file: .env
-    networks:
-      - internal_net
-      - shared_db_network
-
-  # El servidor web (Proxy Inverso)
-  web:
-    image: nginx:alpine
-    container_name: smartvc_nginx
+    container_name: laravel-filament-app
     restart: always
     ports:
-      - "81:80"
+      - "8080:80" # Accederás vía http://ip-del-servidor:8080
     volumes:
-      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-    depends_on:
-      - app
+      - .:/var/www/html
     networks:
-      - internal_net
+      - shared_db_network
+    env_file:
+      - .env
 
 networks:
-  internal_net:
-    driver: bridge
   shared_db_network:
-    external: true
-    name: shared_db_network # El nombre de la red donde vive tu contenedor MySQL actual
+    external: true # Indica que la red ya existe y no debe crearla de cero
