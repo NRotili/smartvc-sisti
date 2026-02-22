@@ -2,21 +2,21 @@ FROM elrincondeisma/php-for-laravel:8.3.7
 
 WORKDIR /app
 
-# 1. Instalamos dependencias del sistema necesarias
-RUN apt-get update && apt-get install -y \
+# 1. Instalamos dependencias del sistema necesarias usando APK (Alpine)
+RUN apk add --no-cache \
     libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install exif gd \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    libjpeg-turbo-dev \
+    freetype-dev \
+    libzip-dev \
+    $PHPIZE_DEPS
 
-# 2. Copiamos archivos de dependencias primero (aprovecha el cache de Docker)
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# 2. Configurar e instalar extensiones de PHP
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install exif gd
 
 # 3. Copiamos el resto del código
 COPY . .
+RUN composer install --no-dev --optimize-autoloader
 
 # 4. Permisos críticos para Laravel/Filament
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
