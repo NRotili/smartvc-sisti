@@ -56,7 +56,7 @@ class DesperfectosCamarasTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
+            ])->defaultSort('fecha_desperfecto', 'desc')
             ->filters([
                 TrashedFilter::make(),
             ])
@@ -83,8 +83,8 @@ class DesperfectosCamarasTable
                         ->successNotificationTitle("Falla asignada correctamente a los desperfectos seleccionados.")
                         ->failureNotificationTitle("Error al asignar la falla a los desperfectos seleccionados.")
                         ->deselectRecordsAfterCompletion()
-                        ->authorize(fn() => Auth::user()->can('asignarFalla:DesperfectoCamara')),
-                    DeleteBulkAction::make(),
+                        ->authorize(fn() => Auth::user()->can('AsignarFalla:DesperfectoCamara')),
+                    // DeleteBulkAction::make(),
                 ]),
             ]);
     }
