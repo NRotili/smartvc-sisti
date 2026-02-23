@@ -97,8 +97,8 @@ class CamarasTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
+                    // DeleteBulkAction::make(),
+                    // RestoreBulkAction::make(),
                     BulkAction::make('cambiarMantenimiento')
                         ->label('Mantenimiento')
                         ->requiresConfirmation()
