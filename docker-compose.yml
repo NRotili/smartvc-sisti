@@ -4,7 +4,7 @@ services:
     container_name: laravel-filament-app
     restart: always
     ports:
-      - "8080:80" # Accederás vía http://ip-del-servidor:8080
+      - "80:80" # Accederás vía http://ip-del-servidor:8080
     volumes:
       - .:/var/www/html
     networks:

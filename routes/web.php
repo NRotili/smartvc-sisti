@@ -15,9 +15,7 @@ use Telegram\Bot\Laravel\Facades\Telegram;
 
 use function Symfony\Component\Translation\t;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::redirect('/', '/dashboard');
 
 Route::get('/get-updates', function () {
 
