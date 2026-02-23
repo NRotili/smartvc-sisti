@@ -172,7 +172,7 @@ class ListIntervenciones extends ListRecords
                             'concejo_' . Carbon::now()->timestamp . '.pdf'
                         );
                     })
-                    ->authorize(fn() => Auth::user()->can('pdfConcejo:Reportes')),
+                    ->authorize(fn() => Auth::user()->can('PdfConcejo:Reportes')),
             ])
                 ->label('Exportar')
                 ->icon('heroicon-o-arrow-down-tray')
