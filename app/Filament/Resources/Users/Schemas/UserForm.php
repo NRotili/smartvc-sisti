@@ -22,7 +22,11 @@ class UserForm
                 DateTimePicker::make('email_verified_at'),
                 TextInput::make('password')
                     ->password()
-                    ->required(),
+                    ->label('Password')
+                    ->revealable()
+                    ->dehydrated(fn($state) => filled($state)) // 👈 Solo se guarda si tiene algo
+                    ->dehydrateStateUsing(fn($state) => bcrypt($state))
+                    ->required(fn(string $context) => $context === 'create'), // requerida solo al crear,
                 Select::make('roles')
                     ->label('Roles')
                     ->multiple()
