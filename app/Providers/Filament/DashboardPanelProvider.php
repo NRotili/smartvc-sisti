@@ -72,7 +72,8 @@ class DashboardPanelProvider extends PanelProvider
                     ->setIcon('heroicon-o-user-circle')
                     ->shouldShowDeleteAccountForm(false)
                     ->setNavigationGroup('Mis datos'),
-                FilamentLogViewer::make(),
+                FilamentLogViewer::make()
+                ->authorize(fn() => auth()->user()->can('View:LogTable')),
             ])
             ->authMiddleware([
                 Authenticate::class,
