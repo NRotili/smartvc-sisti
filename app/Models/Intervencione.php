@@ -6,11 +6,19 @@ use App\Observers\NotificacioneObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 #[ObservedBy(NotificacioneObserver::class)]
 class Intervencione extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, LogsActivity;
+
+     public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll();
+    }
 
     protected $fillable = [
         'categoria_id',

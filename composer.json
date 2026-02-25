@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.2",
         "achyutn/filament-log-viewer": "^1.7",
+        "alizharb/filament-activity-log": "^1.3",
         "bezhansalleh/filament-shield": "^4.0",
         "codedge/laravel-fpdf": "^1.12",
         "codewithkyrian/filament-date-range": "^2.2",

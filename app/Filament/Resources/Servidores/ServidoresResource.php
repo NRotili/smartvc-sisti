@@ -21,7 +21,7 @@ class ServidoresResource extends Resource
     protected static ?string $model = Servidores::class;
     protected static UnitEnum|string|null $navigationGroup = 'Informática';
 
-      protected static ?string $modelLabel = 'Servidor';
+    protected static ?string $modelLabel = 'Servidor';
     protected static ?string $pluralModelLabel = 'Servidores';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::ServerStack;

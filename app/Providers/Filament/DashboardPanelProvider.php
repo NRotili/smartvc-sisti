@@ -26,9 +26,7 @@ use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Filament\Actions\Action;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 use AchyutN\FilamentLogViewer\FilamentLogViewer;
-
-
-
+use AlizHarb\ActivityLog\ActivityLogPlugin;
 
 class DashboardPanelProvider extends PanelProvider
 {
@@ -73,7 +71,13 @@ class DashboardPanelProvider extends PanelProvider
                     ->shouldShowDeleteAccountForm(false)
                     ->setNavigationGroup('Mis datos'),
                 FilamentLogViewer::make()
-                ->authorize(fn() => auth()->user()->can('View:LogTable')),
+                    ->navigationLabel('Logs de Sistema')
+                    ->authorize(fn() => auth()->user()->can('View:LogTable')),
+                ActivityLogPlugin::make()
+                    ->label('Log')
+                    ->pluralLabel('Logs de usuarios')
+                    ->navigationGroup('Sistema')
+                    // ->cluster('System'), // Optional: Group inside a cluster
             ])
             ->authMiddleware([
                 Authenticate::class,
