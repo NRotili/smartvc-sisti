@@ -15,12 +15,20 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class SensoresPresioneResource extends Resource
 {
     protected static ?string $model = SensoresPresione::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+       protected static UnitEnum|string|null $navigationGroup = 'SAyMA';
+
+    protected static ?string $modelLabel = 'Sensor de Presión';
+    protected static ?string $pluralModelLabel = 'Sensores de Presión';
+    protected static ?string $navigationLabel = 'Sensores de Presión';
+
+    //Icono de agua
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::ChartBarSquare;
 
     protected static ?string $recordTitleAttribute = 'Sensores de Presión';
 
