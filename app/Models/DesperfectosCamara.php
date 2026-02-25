@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Observers\DesperfectosCamaraObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[ObservedBy(DesperfectosCamaraObserver::class)]
 class DesperfectosCamara extends Model
 {
     use SoftDeletes;
