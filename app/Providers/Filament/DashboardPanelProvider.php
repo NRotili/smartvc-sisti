@@ -37,6 +37,9 @@ class DashboardPanelProvider extends PanelProvider
             ->id('dashboard')
             ->path('dashboard')
             ->login()
+            ->emailVerification()
+            ->emailChangeVerification()
+            ->passwordReset()
             ->profile()
             ->colors([
                 'primary' => Color::Amber,
@@ -82,7 +85,6 @@ class DashboardPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->passwordReset()
             ->userMenuItems([
                 'profile' => Action::make('profile')
                     ->label(fn() => auth()->user()->name)
