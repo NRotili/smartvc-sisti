@@ -199,7 +199,7 @@ return [
     |
     */
     'permissions' => [
-        'enabled' => false,
+        'enabled' => true,
 
         /**
          * Custom authorization callback.

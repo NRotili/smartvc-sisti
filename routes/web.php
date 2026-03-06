@@ -103,7 +103,7 @@ Route::get('/exportar-pdf-concejo', function () {
         $pdf->Cell(20, 4, $flaw->fecha_desperfecto, 'T', 0, 'C', 0);
         $pdf->Cell(10, 4, $flaw->hora_desperfecto, 'T', 0, 'C', 0);
         $pdf->Cell(55, 4, $flaw->camara->nombre, 'T', 0, 'C', 0);
-        $pdf->Cell(55, 4, $flaw->fallaCamara->tipo_falla, 'T', 0, 'C', 0);
+        $pdf->Cell(55, 4, $flaw->fallaCamara->tipo_falla ?? 'N/A', 'T', 0, 'C', 0);
         $pdf->Cell(20, 4, $flaw->fecha_solucion, 'T', 0, 'C', 0);
         $pdf->Cell(20, 4, $flaw->hora_solucion, 'T', 0, 'C', 0);
         $pdf->Ln(4);
