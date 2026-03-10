@@ -11,6 +11,19 @@ services:
       - shared_db_network
     env_file:
       - .env
+  scheduler:
+    build: .
+    container_name: laravel-filament-scheduler
+    restart: always
+    depends_on:
+      - app
+    volumes:
+      - .:/var/www/html
+    networks:
+      - shared_db_network
+    env_file:
+      - .env
+    command: php artisan schedule:work
 
 networks:
   shared_db_network:
