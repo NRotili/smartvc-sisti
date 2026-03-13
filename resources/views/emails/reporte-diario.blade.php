@@ -1,527 +1,213 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es">
 <head>
-    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reporte Diario de Operaciones</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        :root {
-            --bg:        #0d0f14;
-            --surface:   #141720;
-            --border:    #1e2330;
-            --accent-r:  #e85d4a;
-            --accent-y:  #e8a74a;
-            --accent-g:  #4ae88a;
-            --text-hi:   #f0f2f7;
-            --text-mid:  #8b90a0;
-            --text-lo:   #3d4255;
-            --mono:      'DM Mono', monospace;
-            --display:   'Syne', sans-serif;
-            --body:      'DM Sans', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text-hi);
-            font-family: var(--body);
-            min-height: 100vh;
-            padding: 40px 20px 60px;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .wrapper {
-            max-width: 720px;
-            margin: 0 auto;
-        }
-
-        /* ── HEADER ── */
-        header {
-            margin-bottom: 40px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 16px;
-            flex-wrap: wrap;
-            animation: fadeDown 0.5s ease both;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .header-icon {
-            width: 44px;
-            height: 44px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            flex-shrink: 0;
-        }
-
-        .header-title {
-            font-family: var(--display);
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--text-hi);
-            letter-spacing: -0.3px;
-            line-height: 1.2;
-        }
-
-        .header-subtitle {
-            font-family: var(--mono);
-            font-size: 12px;
-            color: var(--text-mid);
-            margin-top: 2px;
-        }
-
-        .badge-sistema {
-            font-family: var(--mono);
-            font-size: 11px;
-            color: var(--accent-g);
-            background: rgba(74, 232, 138, 0.08);
-            border: 1px solid rgba(74, 232, 138, 0.2);
-            padding: 5px 12px;
-            border-radius: 20px;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .badge-dot {
-            width: 6px;
-            height: 6px;
-            background: var(--accent-g);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        /* ── FECHA ── */
-        .date-row {
-            font-family: var(--mono);
-            font-size: 12px;
-            color: var(--text-mid);
-            margin-bottom: 28px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            animation: fadeDown 0.5s 0.05s ease both;
-        }
-
-        .date-row::before {
-            content: '';
-            width: 20px;
-            height: 1px;
-            background: var(--text-lo);
-        }
-
-        /* ── STAT CARDS ── */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 28px;
-        }
-
-        .stat-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px 18px 18px;
-            position: relative;
-            overflow: hidden;
-            transition: border-color 0.2s, transform 0.2s;
-            animation: fadeUp 0.5s ease both;
-        }
-
-        .stat-card:nth-child(1) { animation-delay: 0.10s; --card-accent: var(--accent-r); }
-        .stat-card:nth-child(2) { animation-delay: 0.17s; --card-accent: var(--accent-y); }
-        .stat-card:nth-child(3) { animation-delay: 0.24s; --card-accent: var(--accent-g); }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            background: var(--card-accent);
-            opacity: 0.8;
-        }
-
-        .stat-card::after {
-            content: '';
-            position: absolute;
-            top: -60px; right: -60px;
-            width: 120px;
-            height: 120px;
-            background: radial-gradient(circle, var(--card-accent) 0%, transparent 70%);
-            opacity: 0.04;
-            pointer-events: none;
-        }
-
-        .stat-card:hover {
-            border-color: var(--card-accent);
-            transform: translateY(-2px);
-        }
-
-        .stat-label {
-            font-family: var(--mono);
-            font-size: 10px;
-            font-weight: 500;
-            color: var(--text-mid);
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .stat-value {
-            font-family: var(--display);
-            font-size: 48px;
-            font-weight: 800;
-            color: var(--card-accent);
-            line-height: 1;
-            margin-bottom: 6px;
-            letter-spacing: -2px;
-        }
-
-        .stat-subtext {
-            font-size: 12px;
-            color: var(--text-mid);
-        }
-
-        /* ── SECTION CARDS ── */
-        .section-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            margin-bottom: 16px;
-            overflow: hidden;
-            animation: fadeUp 0.5s 0.3s ease both;
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .section-title {
-            font-family: var(--display);
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-hi);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .section-count {
-            font-family: var(--mono);
-            font-size: 11px;
-            color: var(--text-mid);
-            background: var(--bg);
-            border: 1px solid var(--border);
-            padding: 3px 10px;
-            border-radius: 20px;
-        }
-
-        /* ── CATEGORY LIST ── */
-        .category-list {
-            list-style: none;
-        }
-
-        .category-list li {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 13px 20px;
-            border-bottom: 1px solid var(--border);
-            transition: background-color 0.15s;
-            gap: 12px;
-        }
-
-        .category-list li:last-child {
-            border-bottom: none;
-        }
-
-        .category-list li:hover {
-            background-color: rgba(255,255,255,0.02);
-        }
-
-        .category-name {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-hi);
-            flex: 1;
-        }
-
-        /* Progress bar */
-        .bar-wrap {
-            flex: 2;
-            height: 4px;
-            background: var(--border);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #3d7fff, #63b3ff);
-            border-radius: 4px;
-            width: var(--pct, 50%);
-            transition: width 0.6s ease;
-        }
-
-        .category-badge {
-            font-family: var(--mono);
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-hi);
-            background: var(--bg);
-            border: 1px solid var(--border);
-            padding: 3px 12px;
-            border-radius: 6px;
-            min-width: 44px;
-            text-align: center;
-        }
-
-        /* ── SUMMARY BOX ── */
-        .summary-box {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 18px 20px;
-            margin-bottom: 16px;
-            animation: fadeUp 0.5s 0.35s ease both;
-        }
-
-        .summary-label {
-            font-family: var(--mono);
-            font-size: 10px;
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-            color: var(--text-mid);
-            margin-bottom: 10px;
-        }
-
-        .summary-text {
-            font-size: 14px;
-            color: var(--text-mid);
-            line-height: 1.7;
-        }
-
-        .summary-text strong {
-            color: var(--text-hi);
-            font-weight: 600;
-        }
-
-        .summary-text .highlight-r { color: var(--accent-r); font-weight: 600; }
-        .summary-text .highlight-g { color: var(--accent-g); font-weight: 600; }
-
-        /* ── EMPTY STATE ── */
-        .empty-state {
-            padding: 32px 20px;
-            text-align: center;
-            color: var(--text-mid);
-            font-size: 14px;
-            font-style: italic;
-        }
-
-        /* ── FOOTER ── */
-        footer {
-            margin-top: 40px;
-            padding: 18px 20px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-            animation: fadeUp 0.5s 0.4s ease both;
-        }
-
-        .footer-brand {
-            font-family: var(--mono);
-            font-size: 12px;
-            color: var(--text-mid);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .footer-ts {
-            font-family: var(--mono);
-            font-size: 11px;
-            color: var(--text-lo);
-        }
-
-        /* ── ANIMATIONS ── */
-        @keyframes fadeDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50%       { opacity: 0.3; }
-        }
-
-        /* ── RESPONSIVE ── */
-        @media (max-width: 520px) {
-            .stats-row {
-                grid-template-columns: 1fr;
-            }
-
-            .stat-value {
-                font-size: 40px;
-            }
-
-            header {
-                flex-direction: column;
-                gap: 12px;
-            }
-        }
-    </style>
 </head>
-<body>
-    <div class="wrapper">
+<body style="margin:0; padding:0; background-color:#f0f2f5; font-family:Arial,Helvetica,sans-serif; -webkit-text-size-adjust:100%;">
 
-        <!-- HEADER -->
-        <header role="banner">
-            <div class="header-left">
-                <div class="header-icon" aria-hidden="true">📡</div>
-                <div>
-                    <div class="header-title">Reporte Diario de Operaciones</div>
-                    <div class="header-subtitle">Sistema de Videovigilancia Municipal</div>
-                </div>
-            </div>
-            <div class="badge-sistema" role="status" aria-label="Sistema activo">
-                <span class="badge-dot" aria-hidden="true"></span>
-                SISTEMA ACTIVO
-            </div>
-        </header>
+<!-- WRAPPER -->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f0f2f5; padding:32px 16px;">
+<tr><td align="center">
 
-        <!-- FECHA -->
-        <div class="date-row" aria-label="Fecha del reporte">
-            {{ $data['fecha'] }}
-        </div>
+<!-- CONTAINER -->
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; width:100%;">
 
-        <!-- STAT CARDS -->
-        <section aria-label="Estadísticas del día">
-            <div class="stats-row">
-                <div class="stat-card" role="region" aria-label="Total de intervenciones">
-                    <div class="stat-label">Intervenciones</div>
-                    <div class="stat-value" aria-live="polite">{{ $data['total_intervenciones'] }}</div>
-                    <div class="stat-subtext">total del día</div>
-                </div>
-
-                <div class="stat-card" role="region" aria-label="Fallas registradas">
-                    <div class="stat-label">Fallas</div>
-                    <div class="stat-value" aria-live="polite">{{ $data['total_fallas'] }}</div>
-                    <div class="stat-subtext">incidencias técnicas</div>
-                </div>
-
-                <div class="stat-card" role="region" aria-label="Expedientes recibidos">
-                    <div class="stat-label">Expedientes</div>
-                    <div class="stat-value" aria-live="polite">{{ $data['total_expedientes'] }}</div>
-                    <div class="stat-subtext">nuevos ingresos</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- INTERVENCIONES POR CATEGORÍA -->
-        <div class="section-card" role="region" aria-labelledby="cat-title">
-            <div class="section-header">
-                <h2 class="section-title" id="cat-title">
-                    <span aria-hidden="true">📋</span>
-                    Intervenciones por categoría
-                </h2>
-                <span class="section-count">
-                    {{ count($data['intervenciones_por_categoria']) }} categorías
-                </span>
-            </div>
-
-            @if(count($data['intervenciones_por_categoria']) > 0)
-                {{-- Calcula el máximo para las barras de progreso --}}
-                @php
-                    $maxTotal = $data['intervenciones_por_categoria']->max('total');
-                @endphp
-                <ul class="category-list" role="list">
-                    @foreach($data['intervenciones_por_categoria'] as $item)
-                    @php
-                        $pct = $maxTotal > 0 ? round(($item->total / $maxTotal) * 100) : 0;
-                    @endphp
-                    <li role="listitem">
-                        <span class="category-name">{{ $item->categoria->nombre }}</span>
-                        <div class="bar-wrap" role="presentation">
-                            <div class="bar-fill" style="--pct: {{ $pct }}%;" aria-hidden="true"></div>
-                        </div>
-                        <span class="category-badge" aria-label="{{ $item->total }} intervenciones">
-                            {{ $item->total }}
+    <!-- ── HEADER ── -->
+    <tr>
+        <td style="background-color:#1a2035; border-radius:12px 12px 0 0; padding:28px 32px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td style="vertical-align:middle;">
+                        <p style="margin:0 0 4px 0; font-size:11px; font-weight:bold; letter-spacing:2px; text-transform:uppercase; color:#6b7a99;">
+                            SISTI - Smart VC
+                        </p>
+                        <h1 style="margin:0; font-size:22px; font-weight:800; color:#ffffff; letter-spacing:-0.3px; line-height:1.2;">
+                            Reporte Diario de Monitoreo
+                        </h1>
+                    </td>
+                    <td align="right" style="vertical-align:middle; padding-left:16px; white-space:nowrap;">
+                        <span style="display:inline-block; background-color:#0d3326; color:#4ae88a; font-size:11px; font-weight:bold; padding:6px 14px; border-radius:20px; letter-spacing:1px;">
+                            &#9679; ACTIVO
                         </span>
-                    </li>
-                    @endforeach
-                </ul>
-            @else
-                <div class="empty-state" role="status">
-                    No hay intervenciones registradas en este período
-                </div>
-            @endif
-        </div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 
-        <!-- RESUMEN DEL DÍA -->
-        <div class="summary-box" role="complementary" aria-label="Resumen del día">
-            <div class="summary-label">📌 Resumen del día</div>
-            <p class="summary-text">
-                Se realizaron <strong>{{ $data['total_intervenciones'] }}</strong> intervenciones en total,
-                distribuidas en <strong>{{ count($data['intervenciones_por_categoria']) }}</strong> categorías diferentes.
-
-                @if($data['total_fallas'] > 0)
-                    Se registraron <span class="highlight-r">{{ $data['total_fallas'] }} fallas técnicas</span> que requirieron atención.
-                @else
-                    <span class="highlight-g">Sin fallas técnicas</span> durante el día.
-                @endif
-
-                @if($data['total_expedientes'] > 0)
-                    Se recibieron <strong>{{ $data['total_expedientes'] }}</strong> nuevos expedientes.
-                @endif
+    <!-- ── FECHA ── -->
+    <tr>
+        <td style="background-color:#1e2540; padding:12px 32px; border-bottom:1px solid #252d45;">
+            <p style="margin:0; font-size:12px; color:#6b7a99; font-family:Courier New,Courier,monospace;">
+                📅 &nbsp;{{ $data['fecha'] }}
             </p>
-        </div>
+        </td>
+    </tr>
 
-        <!-- FOOTER -->
-        <footer role="contentinfo">
-            <div class="footer-brand">
-                <span aria-hidden="true">📱</span>
-                Informe generado automáticamente — no responder
-            </div>
-            <div class="footer-ts">
-                {{ date('d/m/Y H:i') }}
-            </div>
-        </footer>
+    <!-- ── BODY ── -->
+    <tr>
+        <td style="background-color:#ffffff; padding:28px 32px;">
 
-    </div>
+            <!-- STAT CARDS — tabla de 3 columnas -->
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:28px;">
+                <tr>
+                    <!-- Card 1: Intervenciones -->
+                    <td width="31%" style="padding-right:8px; vertical-align:top;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td style="background-color:#fdf1f0; border-radius:10px; border-top:3px solid #e85d4a; padding:18px 14px; text-align:center;">
+                                    <p style="margin:0 0 8px 0; font-size:10px; font-weight:bold; letter-spacing:1.5px; text-transform:uppercase; color:#9b6b66;">INTERVENCIONES</p>
+                                    <p style="margin:0 0 4px 0; font-size:44px; font-weight:800; color:#e85d4a; line-height:1; letter-spacing:-2px;">{{ $data['total_intervenciones'] }}</p>
+                                    <p style="margin:0; font-size:11px; color:#b08080;">total del día</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <!-- Card 2: Fallas -->
+                    <td width="31%" style="padding:0 4px; vertical-align:top;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td style="background-color:#fdf6ec; border-radius:10px; border-top:3px solid #e8a74a; padding:18px 14px; text-align:center;">
+                                    <p style="margin:0 0 8px 0; font-size:10px; font-weight:bold; letter-spacing:1.5px; text-transform:uppercase; color:#9b8060;">FALLAS</p>
+                                    <p style="margin:0 0 4px 0; font-size:44px; font-weight:800; color:#e8a74a; line-height:1; letter-spacing:-2px;">{{ $data['total_fallas'] }}</p>
+                                    <p style="margin:0; font-size:11px; color:#b09060;">incidencias</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <!-- Card 3: Expedientes -->
+                    <td width="31%" style="padding-left:8px; vertical-align:top;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td style="background-color:#edfaf3; border-radius:10px; border-top:3px solid #27ae60; padding:18px 14px; text-align:center;">
+                                    <p style="margin:0 0 8px 0; font-size:10px; font-weight:bold; letter-spacing:1.5px; text-transform:uppercase; color:#3d8060;">EXPEDIENTES</p>
+                                    <p style="margin:0 0 4px 0; font-size:44px; font-weight:800; color:#27ae60; line-height:1; letter-spacing:-2px;">{{ $data['total_expedientes'] }}</p>
+                                    <p style="margin:0; font-size:11px; color:#60a080;">nuevos ingresos</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- DIVIDER -->
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
+                <tr><td style="height:1px; background-color:#e8ecf2; font-size:0; line-height:0;">&nbsp;</td></tr>
+            </table>
+
+            <!-- SECCIÓN: Intervenciones por categoría -->
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
+                <!-- Título sección -->
+                <tr>
+                    <td style="padding-bottom:12px;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td style="vertical-align:middle;">
+                                    <p style="margin:0; font-size:14px; font-weight:800; color:#1a2035;">
+                                        📋 &nbsp;Intervenciones por categoría
+                                    </p>
+                                </td>
+                                <td align="right" style="vertical-align:middle;">
+                                    <span style="font-size:11px; color:#6b7a99; background-color:#f0f2f5; padding:3px 10px; border-radius:10px; font-family:Courier New,Courier,monospace;">
+                                        {{ count($data['intervenciones_por_categoria']) }} categorías
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                @if(count($data['intervenciones_por_categoria']) > 0)
+                    @foreach($data['intervenciones_por_categoria'] as $index => $item)
+                    @php $bgRow = ($index % 2 === 0) ? '#f8f9fc' : '#ffffff'; @endphp
+                    <tr>
+                        <td style="padding:0; background-color:{{ $bgRow }}; border-radius:6px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td style="padding:13px 14px; vertical-align:middle;">
+                                        <p style="margin:0; font-size:13px; font-weight:600; color:#2c3a55;">{{ $item->categoria->nombre }}</p>
+                                    </td>
+                                    <td align="right" style="padding:13px 14px; vertical-align:middle; white-space:nowrap;">
+                                        <span style="display:inline-block; background-color:#1a2035; color:#ffffff; font-size:13px; font-weight:700; padding:4px 14px; border-radius:6px; font-family:Courier New,Courier,monospace;">
+                                            {{ $item->total }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr><td style="height:4px; font-size:0; line-height:0;">&nbsp;</td></tr>
+                    @endforeach
+                @else
+                    <tr>
+                        <td style="padding:24px; text-align:center; font-size:13px; color:#9aa3b5; font-style:italic; background-color:#f8f9fc; border-radius:8px;">
+                            No hay intervenciones registradas en este período
+                        </td>
+                    </tr>
+                @endif
+            </table>
+
+            <!-- DIVIDER -->
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
+                <tr><td style="height:1px; background-color:#e8ecf2; font-size:0; line-height:0;">&nbsp;</td></tr>
+            </table>
+
+            <!-- RESUMEN DEL DÍA -->
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td style="background-color:#f5f7ff; border-left:4px solid #3d7fff; border-radius:0 8px 8px 0; padding:16px 18px;">
+                        <p style="margin:0 0 6px 0; font-size:10px; font-weight:bold; letter-spacing:1.5px; text-transform:uppercase; color:#6b7a99;">
+                            📌 &nbsp;Resumen del día
+                        </p>
+                        <p style="margin:0; font-size:13px; color:#4a5568; line-height:1.7;">
+                            Se realizaron <strong style="color:#1a2035;">{{ $data['total_intervenciones'] }}</strong> intervenciones,
+                            distribuidas en <strong style="color:#1a2035;">{{ count($data['intervenciones_por_categoria']) }}</strong> categorías.
+
+                            @if($data['total_fallas'] > 0)
+                                Se registraron <strong style="color:#e85d4a;">{{ $data['total_fallas'] }} fallas técnicas</strong> que requirieron atención.
+                            @else
+                                <strong style="color:#27ae60;">Sin fallas técnicas</strong> durante el día.
+                            @endif
+
+                            @if($data['total_expedientes'] > 0)
+                                Se recibieron <strong style="color:#1a2035;">{{ $data['total_expedientes'] }}</strong> nuevos expedientes.
+                            @endif
+                        </p>
+                    </td>
+                </tr>
+            </table>
+
+        </td>
+    </tr>
+
+    <!-- ── FOOTER ── -->
+    <tr>
+        <td style="background-color:#1a2035; border-radius:0 0 12px 12px; padding:18px 32px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td style="vertical-align:middle;">
+                        <p style="margin:0; font-size:12px; color:#6b7a99;">
+                            📱 &nbsp;Informe generado automáticamente &mdash; no responder
+                        </p>
+                    </td>
+                    <td align="right" style="vertical-align:middle;">
+                        <p style="margin:0; font-size:11px; color:#3d4a66; font-family:Courier New,Courier,monospace;">
+                            {{ date('d/m/Y H:i') }}
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+</table>
+<!-- /CONTAINER -->
+
+</td></tr>
+</table>
+<!-- /WRAPPER -->
+
 </body>
 </html>

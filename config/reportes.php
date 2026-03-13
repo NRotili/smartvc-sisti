@@ -2,6 +2,7 @@
 
 return [
     'destinatarios' => [
-        'rotilinicolas@gmail.com',
+        'jorgerberti@gmail.com',
+        'pbaldini@villaconstitucion.gov.ar'
     ],
 ];
