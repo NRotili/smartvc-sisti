@@ -232,6 +232,7 @@ return [
         'Publicar:Camara' => 'Publicar/Ocultar cámaras',
         'AsignarFalla:DesperfectoCamara' => 'Asignar falla a desperfectos de cámaras',
         'PdfConcejo:Reportes' => 'Exportar PDF para concejo',
+        'VerUsuarios:Intervenciones' => 'Ver usuarios en intervenciones',
     ],
 
     /*

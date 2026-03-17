@@ -71,6 +71,8 @@ class DashboardPanelProvider extends PanelProvider
                 FilamentEditProfilePlugin::make()
                     ->setTitle('Mi Perfil')
                     ->setIcon('heroicon-o-user-circle')
+                    ->shouldShowEmailForm(false)
+                    ->shouldShowEditProfileForm(false)
                     ->shouldShowDeleteAccountForm(false)
                     ->setNavigationGroup('Mis datos'),
                 FilamentLogViewer::make()

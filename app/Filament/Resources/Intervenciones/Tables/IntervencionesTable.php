@@ -41,7 +41,9 @@ class IntervencionesTable
                 TextColumn::make('user.name')
                     ->label('Usuario')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    //visible solo para el permiso "VerUsuarios:Intervenciones",
+                    ->visible(auth()->user()->can('VerUsuarios:Intervenciones')),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
