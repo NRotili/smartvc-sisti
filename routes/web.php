@@ -1,19 +1,8 @@
 <?php
 
-use App\Models\Camara;
-use App\Models\DesperfectosCamara;
-use App\Models\Expediente;
-use App\Models\FallasCamara;
-use App\Models\Intervencione;
-use App\Models\Pdf;
 use App\Models\SensoresPresione;
-use App\Notifications\AlertaNotification;
-use Carbon\Carbon;
-use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Route;
 use Telegram\Bot\Laravel\Facades\Telegram;
-
-use function Symfony\Component\Translation\t;
 
 Route::redirect('/', '/dashboard');
 

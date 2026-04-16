@@ -7,9 +7,12 @@ use App\Models\Camara;
 use App\Models\DesperfectosCamara;
 use App\Models\FallasCamara;
 use Illuminate\Http\Request;
+use Dedoc\Scramble\Attributes\ExcludeRouteFromDocs;
 
 class DesperfectosController extends Controller
 {
+
+    #[ExcludeRouteFromDocs]
     public function store(Request $request)
     {
         $data = parse_ini_string($request->getContent(), true);
@@ -55,10 +58,9 @@ class DesperfectosController extends Controller
         ]);
 
         return response()->json(['msg' => 'Falla registrada correctamente', 'falla_id' => $falla->id], 201);
-
     }
 
-
+    #[ExcludeRouteFromDocs]
     public function update(Request $request)
     {
         $data = parse_ini_string($request->getContent(), true);
@@ -99,6 +101,5 @@ class DesperfectosController extends Controller
         return response()->json([
             'msg' => 'Falla cerrada correctamente.',
         ], 200);
-
     }
 }

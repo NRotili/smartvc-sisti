@@ -233,6 +233,7 @@ return [
         'AsignarFalla:DesperfectoCamara' => 'Asignar falla a desperfectos de cámaras',
         'PdfConcejo:Reportes' => 'Exportar PDF para concejo',
         'VerUsuarios:Intervenciones' => 'Ver usuarios en intervenciones',
+        'View:ApiDocs' => 'Visualizar documentación de la API',
     ],
 
     /*

@@ -13,3 +13,8 @@ Schedule::command('reporte:diario')
     ->dailyAt('00:00')
     ->withoutOverlapping()
     ->onOneServer();
+
+Schedule::command('sanctum:prune-expired --hours=24')
+    ->daily()
+    ->withoutOverlapping()
+    ->onOneServer();
