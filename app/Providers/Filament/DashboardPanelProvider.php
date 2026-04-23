@@ -27,6 +27,10 @@ use Filament\Actions\Action;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 use AchyutN\FilamentLogViewer\FilamentLogViewer;
 use AlizHarb\ActivityLog\ActivityLogPlugin;
+use Filament\Navigation\NavigationBuilder;
+use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationItem;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardPanelProvider extends PanelProvider
 {
@@ -82,7 +86,7 @@ class DashboardPanelProvider extends PanelProvider
                     ->label('Log')
                     ->pluralLabel('Logs de usuarios')
                     ->navigationGroup('Sistema')
-                    // ->cluster('System'), // Optional: Group inside a cluster
+                // ->cluster('System'), // Optional: Group inside a cluster
             ])
             ->authMiddleware([
                 Authenticate::class,
