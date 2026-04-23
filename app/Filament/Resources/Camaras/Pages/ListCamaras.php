@@ -30,7 +30,7 @@ class ListCamaras extends ListRecords
                 ->color('danger')
                 ->requiresConfirmation()
                 ->action(function () {
-                    $serverMonitoreo = Servidores::where('descripcion', 'like', '%Monitoreo%')->get();
+                    $serverMonitoreo = Servidores::withTrashed()->where('descripcion', 'like', '%Monitoreo%')->get();
                     foreach ($serverMonitoreo as $server) {
                         Debugbar::info($server->ip);
 
