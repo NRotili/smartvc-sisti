@@ -30,7 +30,7 @@ class ListCamaras extends ListRecords
                 ->color('danger')
                 ->requiresConfirmation()
                 ->action(function () {
-                    $serverMonitoreo = Servidores::withTrashed()->where('descripcion', 'like', '%Monitoreo%')->get();
+                    $serverMonitoreo = Servidores::where('descripcion', 'like', '%Monitoreo%')->get();
                     foreach ($serverMonitoreo as $server) {
                         Debugbar::info($server->ip);
 
@@ -39,7 +39,7 @@ class ListCamaras extends ListRecords
                             foreach ($responses['Response']['Data']['Cameras'] as $response) {
                                 Debugbar::info($response['Name']);
 
-                                $camera = Camara::where('nombre', $response['Name'])->first();
+                                $camera = Camara::withTrashed()->where('nombre', $response['Name'])->first();
 
                                 $responses2 = Http::timeout(10)->get("http://$server->ip:8601/Interface/Cameras/GetStatus?Cameras=" . $response['Name'] . "&ResponseFormat=JSON&AuthUser=" . env('DIGIFORT_USER') . "&AuthPass=" . env('DIGIFORT_PASSWORD'))->json();
                                 Debugbar::info($responses2);
