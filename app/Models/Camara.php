@@ -34,4 +34,9 @@ class Camara extends Model
     {
         return $this->belongsTo(Servidores::class);
     }
+
+    public function desperfectos()
+    {
+        return $this->hasMany(DesperfectosCamara::class, 'camara_id');
+    }
 }

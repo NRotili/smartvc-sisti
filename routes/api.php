@@ -19,6 +19,7 @@ Route::prefix('monitoreo')->group(function () {
 Route::post('/login', [UserController::class, 'login']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('monitoreo/camaras/fuera-servicio', [CameraController::class, 'getFueraServicio']);
     Route::post('/logout', [UserController::class, 'logout']);
     Route::get('datacenter/temperatura', [SensorController::class, 'getTemperatura']);
 });
