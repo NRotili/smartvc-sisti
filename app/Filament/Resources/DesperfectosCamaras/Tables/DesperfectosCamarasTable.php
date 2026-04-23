@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\DesperfectosCamaras\Tables;
 
 use App\Models\DesperfectosCamara;
+use CodeWithKyrian\FilamentDateRange\Tables\Filters\DateRangeFilter;
 use Dom\Text;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
@@ -10,6 +11,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
@@ -32,6 +34,7 @@ class DesperfectosCamarasTable
                     ->sortable(),
                 TextColumn::make('camara.nombre')
                     ->label('Cámara')
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('fallaCamara.tipo_falla')
                     ->label('Tipo de Falla')
@@ -58,6 +61,15 @@ class DesperfectosCamarasTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])->defaultSort('fecha_desperfecto', 'desc')
             ->filters([
+                //Por cámara
+                SelectFilter::make('camara_id')
+                    ->label('Cámara')
+                    ->relationship('camara', 'nombre')
+                    ->searchable()
+                    ->multiple()
+                    ->preload(),
+                DateRangeFilter::make('fecha_desperfecto')
+                    ->label('Rango de Fecha de Desperfecto'),
                 TrashedFilter::make(),
             ])
             ->recordActions([
