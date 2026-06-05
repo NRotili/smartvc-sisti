@@ -30,6 +30,6 @@ class DesperfectosCamara extends Model
 
     public function camara()
     {
-        return $this->belongsTo(Camara::class, 'camara_id');
+        return $this->belongsTo(Camara::class, 'camara_id')->withTrashed();
     }
 }
