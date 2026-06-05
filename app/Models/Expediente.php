@@ -23,7 +23,7 @@ class Expediente extends Model
 
     public function iniciadorExpediente()
     {
-        return $this->belongsTo(IniciadoresExpediente::class, 'iniciador_expediente_id');
+        return $this->belongsTo(IniciadoresExpediente::class, 'iniciador_expediente_id')->withTrashed();
     }
 
     public function camaras()
