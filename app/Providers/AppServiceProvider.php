@@ -39,7 +39,7 @@ class AppServiceProvider extends ServiceProvider
         Filament::serving(function () {
             Filament::registerNavigationItems([
                 NavigationItem::make('Documentación - API')
-                    ->url('/api/documentation')
+                    ->url('/docs/api')
                     ->icon('heroicon-o-book-open')
                     ->group('Sistema')
                     ->sort(99) // para que aparezca al final del grupo
