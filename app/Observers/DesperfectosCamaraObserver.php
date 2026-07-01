@@ -7,6 +7,7 @@ use App\Models\User;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
 class DesperfectosCamaraObserver
@@ -14,11 +15,28 @@ class DesperfectosCamaraObserver
 
     public function created(DesperfectosCamara $desperfectosCamara): void
     {
-        Telegram::sendMessage([
-            'chat_id' => config('services.telegram.canal_monitoreo_fallas'),
-            'text' => "⚠️ *Nuevo Desperfecto de Cámara* ⚠️\n\n*ID:* #{$desperfectosCamara->id}\n*Fecha:* {$desperfectosCamara->fecha_desperfecto} {$desperfectosCamara->hora_desperfecto}\n*Cámara:* {$desperfectosCamara->camara->nombre} - {$desperfectosCamara->camara->descripcion}",
-            'parse_mode' => 'Markdown'
-        ]);
+        try {
+            Telegram::sendMessage([
+                'chat_id' => config('services.telegram.canal_monitoreo_fallas'),
+                'text' => "⚠️ *Nuevo Desperfecto de Cámara* ⚠️\n\n*ID:* #{$desperfectosCamara->id}\n*Fecha:* {$desperfectosCamara->fecha_desperfecto} {$desperfectosCamara->hora_desperfecto}\n*Cámara:* {$desperfectosCamara->camara->nombre} - {$desperfectosCamara->camara->descripcion}",
+                'parse_mode' => 'Markdown'
+            ]);
+        } catch (\Throwable $th) {
+            Log::error('Error al enviar notificación de Telegram', [
+                'desperfecto_id' => $desperfectosCamara->id,
+                'message' => $th->getMessage(),
+            ]);
+
+            User::role('super_admin')
+                ->get()
+                ->each(function ($user) use ($th) {
+                    Notification::make()
+                        ->title('Error al enviar notificación de Telegram')
+                        ->body($th->getMessage())
+                        ->danger()
+                        ->sendToDatabase($user);
+                });
+        }
     }
 
     /**
@@ -52,7 +70,11 @@ class DesperfectosCamaraObserver
             ]);
 
         } catch (\Throwable $th) {
-            //Enviar notificación a los que tienen rol super_admin
+            Log::error('Error al enviar notificación de Telegram', [
+                'desperfecto_id' => $desperfectosCamara->id,
+                'message' => $th->getMessage(),
+            ]);
+
             User::role('super_admin')
                 ->get()
                 ->each(function ($user) use ($th) {
