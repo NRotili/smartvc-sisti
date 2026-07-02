@@ -9,6 +9,12 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
+Schedule::command('camaras:sincronizar-estado')
+    ->everyThirtyMinutes()
+    ->withoutOverlapping()
+    ->onOneServer()
+    ->runInBackground();
+
 Schedule::command('reporte:diario')
     ->dailyAt('00:00')
     ->withoutOverlapping()
