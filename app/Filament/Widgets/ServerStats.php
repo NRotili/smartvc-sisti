@@ -13,6 +13,7 @@ class ServerStats extends StatsOverviewWidget
 {
     use HasWidgetShield;
     protected static ?int $sort = 2;
+    protected static bool $isLazy = true;
     protected ?string $pollingInterval = null;
     protected ?string $heading = 'KPIs Servidores';
     protected function getStats(): array

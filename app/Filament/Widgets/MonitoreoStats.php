@@ -15,6 +15,7 @@ class MonitoreoStats extends StatsOverviewWidget
 {
     use HasWidgetShield;
     protected ?string $pollingInterval = null;
+    protected static bool $isLazy = true;
     protected static ?int $sort = 1;
     protected ?string $heading = 'KPIs Monitoreo';
 
