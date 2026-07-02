@@ -19,6 +19,7 @@ class TemperaturaServerChart extends ApexChartWidget
     use HasWidgetShield;
     protected static ?string $chartId = 'temperaturaServerChart';
     protected static ?int $sort = 50;
+    protected static bool $isLazy = true;
 
 
     protected ?string $pollingInterval = '60s';

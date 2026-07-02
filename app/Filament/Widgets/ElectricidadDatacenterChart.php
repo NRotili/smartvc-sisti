@@ -18,6 +18,7 @@ class ElectricidadDatacenterChart extends ApexChartWidget
      * @var string
      */
     protected static ?int $sort = 51;
+    protected static bool $isLazy = true;
     protected ?string $pollingInterval = '60s';
 
     protected static ?string $chartId = 'electricidadDatacenterChart';

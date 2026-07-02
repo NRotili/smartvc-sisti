@@ -12,6 +12,7 @@ class FallasChart extends ChartWidget
     use HasWidgetShield;
     protected ?string $heading = 'Fallas de cámaras';
     protected static ?int $sort = 4;
+    protected static bool $isLazy = true;
     protected ?string $pollingInterval = null;
     protected function getFilters(): ?array
     {

@@ -12,7 +12,7 @@ class PresionAguaCharts extends ApexChartWidget
 {
     protected static ?string $chartId = 'presionAguaCharts';
     protected ?string $pollingInterval = '60s';
-    protected static bool $isLazy = false;
+    protected static bool $isLazy = true;
 
     public ?string $topicId = null;
 

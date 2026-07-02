@@ -11,6 +11,7 @@ class IntervencioneChart extends ChartWidget
 {
     use HasWidgetShield;
     protected static ?int $sort = 3;
+    protected static bool $isLazy = true;
     protected ?string $heading = 'Intervenciones';
     protected ?string $pollingInterval = null;
 
