@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\ElectricidadDatacenterChart;
+use App\Filament\Widgets\ResumenMensualWidget;
 use App\Filament\Widgets\FallasChart;
 use App\Filament\Widgets\IntervencioneChart;
 use App\Filament\Widgets\MonitoreoStats;
@@ -19,6 +20,20 @@ class Dashboard extends BaseDashboard
 {
     // protected string $view = 'filament.pages.dashboard';
     protected static ?string $title = 'Dashboard';
+
+    public function getHeading(): string
+    {
+        $hora  = now()->hour;
+        $saludo = match (true) {
+            $hora >= 6 && $hora < 12  => 'Buenos días',
+            $hora >= 12 && $hora < 19 => 'Buenas tardes',
+            default                   => 'Buenas noches',
+        };
+
+        $nombre = auth()->user()?->name ?? 'Operador';
+
+        return "{$saludo}, {$nombre}";
+    }
 
 
     public function getColumns(): int|array
@@ -37,6 +52,7 @@ class Dashboard extends BaseDashboard
 
         // Merge with static widgets
         return array_merge($dynamicWidgets, [
+            ResumenMensualWidget::class,
             MonitoreoStats::class,
             ServerStats::class,
             IntervencioneChart::class,
