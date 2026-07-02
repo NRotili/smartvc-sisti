@@ -35,5 +35,11 @@ WORKDIR /var/www/html
 COPY . .
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
+# 7. Entrypoint que corrige permisos en cada arranque
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Exponer el puerto 80
 EXPOSE 80
+
+ENTRYPOINT ["docker-entrypoint.sh"]
