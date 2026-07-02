@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Intervenciones\Schemas;
 
+use App\Models\User;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
@@ -75,6 +76,15 @@ class IntervencioneForm
                             ])->columns(2)
                             ->reorderable(true)
                             ->addActionLabel('Agregar Cámara'),
+                        Select::make('operadoresMonitoreo')
+                            ->label('Operadores de Monitoreo presentes')
+                            ->multiple()
+                            ->relationship('operadoresMonitoreo', 'name', fn($query) => $query->role('Operador de Monitoreo')->orderBy('name'))
+                            ->preload()
+                            ->searchable()
+                            ->native(false)
+                            ->placeholder('Selecciona los operadores presentes')
+                            ->columnSpanFull(),
                         Repeater::make('conocimientos')
                             ->label('Interventores Relacionados')
                             ->relationship('conocimientos')

@@ -52,6 +52,12 @@ class Intervencione extends Model
         return $this->hasMany(ConocimientoIntervencione::class);
     }
 
+    //operadores de monitoreo presentes
+    public function operadoresMonitoreo()
+    {
+        return $this->belongsToMany(User::class, 'intervencione_operadores_monitoreo');
+    }
+
     public function canBeEditedBy(User $user): bool
     {
         return (

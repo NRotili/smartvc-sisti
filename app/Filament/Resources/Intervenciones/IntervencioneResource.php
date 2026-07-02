@@ -99,6 +99,12 @@ class IntervencioneResource extends Resource
                     ])->columns(2)->columnSpanFull(),
                 Tabs::make('Tabs')
                     ->tabs([
+                        Tab::make('Operadores de Monitoreo')
+                            ->schema([
+                                TextEntry::make('operadoresMonitoreo.name')
+                                    ->label('Operadores presentes durante la intervención')
+                                    ->badge(),
+                            ]),
                         Tab::make('Interventores')
                             ->schema([
                                 TextEntry::make('conocimientos.conocimiento.nombre')
