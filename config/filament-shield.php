@@ -232,6 +232,7 @@ return [
         'Publicar:Camara' => 'Publicar/Ocultar cámaras',
         'AsignarFalla:DesperfectoCamara' => 'Asignar falla a desperfectos de cámaras',
         'PdfConcejo:Reportes' => 'Exportar PDF para concejo',
+        'ReporteDisponibilidad:Reportes' => 'Exportar reporte de disponibilidad de cámaras',
         'VerUsuarios:Intervenciones' => 'Ver usuarios en intervenciones',
         'View:ApiDocs' => 'Visualizar documentación de la API',
     ],
