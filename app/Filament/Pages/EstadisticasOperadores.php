@@ -14,7 +14,7 @@ use UnitEnum;
 class EstadisticasOperadores extends Page
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::ChartBarSquare;
-    protected static UnitEnum|string|null $navigationGroup = 'Sistema';
+    protected static UnitEnum|string|null $navigationGroup = 'Monitoreo';
     protected static ?string $navigationLabel = 'Estadísticas de Operadores';
     protected static ?int $navigationSort = 11;
     protected string $view = 'filament.pages.estadisticas-operadores';
