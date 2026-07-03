@@ -58,6 +58,22 @@ class Intervencione extends Model
         return $this->belongsToMany(User::class, 'intervencione_operadores_monitoreo');
     }
 
+    public function getFueraDePlazoAttribute(): ?string
+    {
+        if (! $this->created_at || ! $this->fecha_hora) {
+            return null;
+        }
+        $fh = \Carbon\Carbon::parse($this->fecha_hora);
+        $ca = \Carbon\Carbon::parse($this->created_at);
+        $horas = $fh->diffInHours($ca);
+
+        return match(true) {
+            $horas >= 6 => 'Es posible que no haya sido vista en tiempo real',
+            $horas >= 2 => 'Cargada fuera de plazo',
+            default     => null,
+        };
+    }
+
     public function canBeEditedBy(User $user): bool
     {
         return (

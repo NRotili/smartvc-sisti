@@ -25,7 +25,25 @@ class IntervencionesTable
                 TextColumn::make('fecha_hora')
                     ->label('Fecha y Hora')
                     ->dateTime()
-                    ->sortable(),
+                    ->formatStateUsing(fn($state) => ucfirst(
+                        \Carbon\Carbon::parse($state)->locale('es')->isoFormat('MMM D, YYYY HH:mm')
+                    ))
+                    ->sortable()
+                    ->color(fn($record): ?string => match($record->fuera_de_plazo) {
+                        'Es posible que no haya sido vista en tiempo real' => 'danger',
+                        'Cargada fuera de plazo'                          => 'warning',
+                        default                                           => null,
+                    })
+                    ->tooltip(function ($record): ?string {
+                        $alerta = $record->fuera_de_plazo;
+                        if (! $alerta) return null;
+
+                        $diff = \Carbon\Carbon::parse($record->fecha_hora)
+                            ->locale('es')
+                            ->diffForHumans(\Carbon\Carbon::parse($record->created_at), true);
+
+                        return $alerta . ' (' . $diff . ' después)';
+                    }),
                 //Dscripción html y que no se escape
                 TextColumn::make('descripcion')
                     ->label('Descripción')
