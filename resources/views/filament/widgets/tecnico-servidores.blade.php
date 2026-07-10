@@ -22,10 +22,39 @@
                                 <span class="font-medium">Tiempo activo:</span> {{ $servidor['uptime'] }}
                             </div>
 
+                            @if($servidor['cpu'] !== null)
+                                <div class="text-sm text-gray-700 dark:text-gray-300">
+                                    <span class="font-medium">CPU:</span>
+                                    <span @class(['text-danger-600 dark:text-danger-400 font-semibold' => $servidor['cpu'] >= 85])>{{ $servidor['cpu'] }}%</span>
+                                    <span class="font-medium">· RAM:</span> {{ $servidor['ram'] }} GB
+                                </div>
+                                <div class="text-sm text-gray-700 dark:text-gray-300">
+                                    <span class="font-medium">Tráfico:</span>
+                                    ↓ {{ $servidor['trafico_entrada'] }} Mbps · ↑ {{ $servidor['trafico_salida'] }} Mbps
+                                </div>
+                            @endif
+
+                            @if($servidor['disco_tb'] !== null)
+                                <div class="text-sm text-gray-700 dark:text-gray-300">
+                                    <span class="font-medium">Grabaciones en disco:</span> {{ $servidor['disco_tb'] }} TB
+                                </div>
+                            @endif
+
                             @if($servidor['licencias'])
                                 <div class="text-sm text-gray-700 dark:text-gray-300">
                                     <span class="font-medium">Licencias:</span>
                                     {{ $servidor['licencias']['usadas'] }} / {{ $servidor['licencias']['total'] }} en uso
+                                </div>
+                            @endif
+
+                            @if($servidor['usuarios'] !== null)
+                                <div class="text-sm text-gray-700 dark:text-gray-300">
+                                    <span class="font-medium">Usuarios conectados:</span>
+                                    @if($servidor['usuarios']->isEmpty())
+                                        ninguno
+                                    @else
+                                        {{ $servidor['usuarios']->implode(', ') }}
+                                    @endif
                                 </div>
                             @endif
 

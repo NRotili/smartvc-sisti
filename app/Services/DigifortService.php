@@ -58,9 +58,49 @@ class DigifortService
     }
 
     /**
+     * Uso de recursos del servidor (GET /Interface/Server/GetUsage).
+     *
+     * @return array{procesador: int, memoria_global: int, memoria_servidor: int, conexiones: int, clientes: int, trafico_entrada: int, trafico_salida: int}|null
+     */
+    public function usoServidor(Servidores $servidor): ?array
+    {
+        return Cache::remember("digifort.uso.{$servidor->id}", self::CACHE_TTL, function () use ($servidor) {
+            $data = $this->get($servidor, 'Server/GetUsage');
+
+            if (! isset($data['Stats'])) {
+                return null;
+            }
+
+            return [
+                'procesador' => (int) ($data['Stats']['Processor'] ?? 0),
+                'memoria_global' => (int) ($data['Stats']['GlobalMemory'] ?? 0),
+                'memoria_servidor' => (int) ($data['Stats']['ServerMemory'] ?? 0),
+                'conexiones' => (int) ($data['Stats']['Connections'] ?? 0),
+                'clientes' => (int) ($data['Stats']['Clients'] ?? 0),
+                'trafico_entrada' => (int) ($data['Stats']['InputTraffic'] ?? 0),
+                'trafico_salida' => (int) ($data['Stats']['OutputTraffic'] ?? 0),
+            ];
+        });
+    }
+
+    /**
+     * Conexiones de usuarios al servidor (GET /Interface/Users/GetConnections).
+     * Cada elemento trae Username, IP, ConnectionTime (segundos) y ConnectionType.
+     */
+    public function conexionesUsuarios(Servidores $servidor): ?array
+    {
+        return Cache::remember("digifort.conexiones.{$servidor->id}", self::CACHE_TTL, function () use ($servidor) {
+            $data = $this->get($servidor, 'Users/GetConnections');
+
+            return $data['Connections'] ?? null;
+        });
+    }
+
+    /**
      * Estado de todas las cámaras del servidor. Cada elemento trae
      * Name, Working (bool), Active (bool), WrittingToDisk (bool),
-     * RecordingFPS y RecordingHours.
+     * ConfiguredToRecord (bool), RecordingFPS, RecordingHours,
+     * InactiveTime (segundos caída) y UsedDiskSpace (bytes).
      */
     public function estadoCamaras(Servidores $servidor): ?array
     {

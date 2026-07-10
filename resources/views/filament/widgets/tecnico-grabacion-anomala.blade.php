@@ -1,7 +1,7 @@
 <x-filament-widgets::widget>
     <x-filament::section heading="Cámaras con grabación anómala" icon="heroicon-o-video-camera-slash">
         <x-slot name="description">
-            Funcionan según Digifort pero no escriben a disco (excluye cámaras en mantenimiento)
+            Configuradas para grabar y funcionando según Digifort, pero sin escribir a disco (excluye cámaras en mantenimiento; con grabación por movimiento puede ser transitorio)
         </x-slot>
 
         @if(count($servidoresCaidos) > 0)

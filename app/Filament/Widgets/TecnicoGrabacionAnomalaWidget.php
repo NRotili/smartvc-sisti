@@ -47,8 +47,11 @@ class TecnicoGrabacionAnomalaWidget extends Widget
                 $working = (bool) ($camara['Working'] ?? false);
                 $grabando = (bool) ($camara['WrittingToDisk'] ?? false);
                 $fps = (float) ($camara['RecordingFPS'] ?? 0);
+                // ConfiguredToRecord evita falsos positivos: una cámara sin
+                // grabación configurada nunca escribe a disco y no es anomalía
+                $configurada = (bool) ($camara['ConfiguredToRecord'] ?? true);
 
-                if ($activa && $working && (! $grabando || $fps <= 0)) {
+                if ($activa && $working && $configurada && (! $grabando || $fps <= 0)) {
                     $anomalas[] = [
                         'nombre' => $nombre,
                         'servidor' => $servidor->nombre,
