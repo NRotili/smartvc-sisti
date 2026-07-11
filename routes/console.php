@@ -20,6 +20,11 @@ Schedule::command('reporte:diario')
     ->withoutOverlapping()
     ->onOneServer();
 
+Schedule::command('reporte:mensual-operadores')
+    ->monthlyOn(1, '07:00')
+    ->withoutOverlapping()
+    ->onOneServer();
+
 Schedule::command('sanctum:prune-expired --hours=24')
     ->daily()
     ->withoutOverlapping()
