@@ -78,10 +78,14 @@ Body is INI-format (`parse_ini_string`). Cameras in `mantenimiento=1` are ignore
 
 ### Digifort HTTP API
 
-Servers expose `http://{ip}:8601/Interface/...`. Credentials from `config('services.digifort.user/password')` or env `DIGIFORT_USER` / `DIGIFORT_PASSWORD`. Key endpoints:
-- `GET /Interface/Server/GetStatus` — CPU, RAM, traffic
-- `GET /Interface/Cameras/GetStatus` — per-camera status (all cameras at once if no `Cameras` param); fields: `Name`, `Working` (bool), `Active` (bool), `WrittingToDisk` (bool), `RecordingFPS`, `RecordingHours`
+Servers expose `http://{ip}:8601/Interface/...`. Credentials from `config('services.digifort.user/password')` or env `DIGIFORT_USER` / `DIGIFORT_PASSWORD`. La doc completa está en `api_digi.pdf` (raíz del proyecto, 390 páginas; extraer texto con `pdftotext` para buscarla). Key endpoints:
+- `GET /Interface/Server/GetInfo` — `UpTime` (segundos), `Version`
+- `GET /Interface/Server/GetUsage` — `Processor` (%), `GlobalMemory` (bytes), `Connections`, `Clients`, `InputTraffic`/`OutputTraffic` (Kbps); JSON en `Response.Data.Stats`
+- `GET /Interface/Users/GetConnections` — usuarios conectados (`Username`, `IP`, `ConnectionTime`, `ConnectionType`); los tipos humanos son `SURVEILLANCE_CLIENT`, `ADMINISTRATION_CLIENT`, `WEB_*`
+- `GET /Interface/Cameras/GetStatus` — per-camera status (all cameras at once if no `Cameras` param); fields: `Name`, `Working` (bool), `Active` (bool), `WrittingToDisk` (bool), `ConfiguredToRecord` (bool), `RecordingFPS`, `RecordingHours`, `InactiveTime` (segundos caída), `UsedDiskSpace` (bytes). Ojo: una cámara con grabación por movimiento legítimamente tiene `WrittingToDisk=false` sin movimiento — filtrar por `ConfiguredToRecord` para detectar anomalías
 - `GET /Interface/Server/GetLicenses` — license usage (used in `MonitoreoStats` widget)
+
+**`App\Services\DigifortService`** centraliza estas llamadas con cache de 60s (`Cache::remember`) — todo código nuevo que consulte Digifort debe usarlo en lugar de `Http::get` directo.
 
 ### PDF Generation
 
@@ -110,6 +114,22 @@ Located in `app/Filament/Widgets/`. Registered in `app/Filament/Pages/Dashboard.
 
 `ResumenMensualWidget` — visible only for roles `Operador de Monitoreo` and `Supervisor de Monitoreo`; shows personal monthly stats (interventions created, participated, team participation %). Supervisors also see active faults count.
 
+### Páginas Custom (grupo Monitoreo)
+
+- `MapaCamaras` — mapa de cámaras con el paquete `eduardoribeirodev/filament-leaflet`
+- `EstadisticasOperadores` — stats por operador con filtros artesanales (inputs con `wire:model`)
+- `PanelTecnico` — dashboard para técnicos: widgets `Tecnico*` que combinan BD (fallas abiertas, MTTR, cámaras recurrentes) y Digifort vía `DigifortService` (salud de servidores, grabación anómala)
+- `MapaCalorIntervenciones` — heatmap Leaflet de intervenciones por cámara con filtros en form schema de Filament (patrón `{{ $this->form }}`)
+
+Todas usan `HasPageShield`: después de crear una página correr `php artisan shield:generate --all` y asignar el permiso a los roles.
+
+### Leaflet Vendorizado (Mapa de Calor)
+
+`public/vendor/leaflet/` contiene Leaflet 1.9.4 + leaflet.heat 0.2.0 locales (sin CDN). **`leaflet-heat.js` está parcheado** — no reemplazar por el original:
+- Envuelto en closure `(function (L) {...})(window.L)`: el paquete `filament-leaflet` carga su propio Leaflet y **pisa `window.L` en runtime**, lo que rompe cualquier plugin que resuelva `L` global al ejecutarse. Todo script propio de Leaflet debe capturar `L` en un closure al momento de la carga
+- Soporta opción `pane` en `onAdd` y remoción segura del canvas
+- El pane del calor necesita z-index sobre las tiles (z 200) vía regla CSS con `!important` — el estilo inline en el pane se pierde
+
 ### Filament 4 Gotchas
 
 - **No usar `->viteTheme()`** en `DashboardPanelProvider` — rompe todos los estilos de Filament
@@ -117,6 +137,7 @@ Located in `app/Filament/Widgets/`. Registered in `app/Filament/Pages/Dashboard.
 - **Widgets side-by-side en páginas custom**: usar `getFooterWidgets()` + `getFooterWidgetsColumns()`. Las clases Tailwind estándar (`col-span-*`) no funcionan en el grid de Filament
 - **`TextColumn` en tablas**: `->getStateUsing()` funciona para estado dinámico; `->formatStateUsing()` no recibe `$record`; `->description()` no existe en Filament 4; `->recordClasses()` con clases Tailwind arbitrarias no funciona (CSS no compilado); `->color()` y `->tooltip()` sí funcionan. Para lógica compleja con `$record`, usar un accessor en el modelo y leerlo como columna normal
 - **`HasWidgetShield`** en widgets que no necesitan permisos granulares: omitirlo y usar `canView()` directamente
+- **Forms en páginas custom**: `Filament\Pages\Page` ya implementa `InteractsWithSchemas` — definir `public ?array $data = []`, `public function form(Schema $schema): Schema` con `->statePath('data')`, llenar con `$this->form->fill([...])` en `mount()` y renderizar con `{{ $this->form }}`. Preferir esto a inputs artesanales con `wire:model`
 - **Carbon `diffInHours()`**: devuelve valor negativo si la fecha argumento es anterior. Usar `$fechaInicio->diffInHours($fechaFin)` (de la más vieja a la más nueva) para obtener valor positivo
 
 ### Docker
