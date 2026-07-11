@@ -15,7 +15,7 @@ class EnviarReporteDiarioMonitoreo extends Command
      *
      * @var string
      */
-    protected $signature = 'reporte:diario';
+    protected $signature = 'reporte:diario {--fecha= : Día a reportar en formato YYYY-MM-DD (por defecto, ayer)}';
 
     /**
      * The console command description.
@@ -29,11 +29,15 @@ class EnviarReporteDiarioMonitoreo extends Command
      */
     public function handle(ReporteDiarioService $service)
     {
-        $data = $service->generar();
+        $dia = $this->option('fecha')
+            ? \Carbon\Carbon::createFromFormat('Y-m-d', $this->option('fecha'))
+            : null;
 
-        Mail::to(SuscripcionReporte::destinatarios('diario', config('reportes.destinatarios')))
+        $data = $service->generar($dia);
+
+        Mail::bcc(SuscripcionReporte::destinatarios('diario', config('reportes.destinatarios')))
             ->queue(new ReporteDiarioMailMonitoreo($data));
 
-        $this->info('Reporte diario enviado');
+        $this->info("Reporte diario ({$data['fecha']}) enviado");
     }
 }

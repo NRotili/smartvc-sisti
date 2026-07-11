@@ -23,7 +23,7 @@ class EnviarReporteMensualOperadores extends Command
 
         $data = $service->generar($mes);
 
-        Mail::to(SuscripcionReporte::destinatarios('mensual_operadores', config('reportes.destinatarios_operadores')))
+        Mail::bcc(SuscripcionReporte::destinatarios('mensual_operadores', config('reportes.destinatarios_operadores')))
             ->queue(new ReporteMensualOperadoresMail($data));
 
         $this->info("Reporte mensual de operadores ({$data['mes']}) enviado");
