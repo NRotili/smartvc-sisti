@@ -12,30 +12,32 @@ use App\Models\Intervencione;
 use BackedEnum;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Carbon\Carbon;
-use Dom\Text;
 use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section as ComponentsSection;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use UnitEnum;
-use Filament\Schemas\Components\Tabs;
-use Filament\Schemas\Components\Tabs\Tab;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Section as ComponentsSection;
-use Symfony\Component\ErrorHandler\Debug;
 
 class IntervencioneResource extends Resource
 {
-    //Breadcrumbs
+    // Breadcrumbs
     protected static ?string $modelLabel = 'Intervención';
+
     protected static ?string $pluralModelLabel = 'Intervenciones';
 
     protected static ?string $model = Intervencione::class;
+
     protected static UnitEnum|string|null $navigationGroup = 'Monitoreo';
+
     protected static ?string $navigationLabel = 'Intervenciones';
+
     protected static ?int $navigationSort = 2;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::ListBullet;
@@ -59,8 +61,6 @@ class IntervencioneResource extends Resource
         ];
     }
 
-    
-
     public static function getPages(): array
     {
         return [
@@ -79,13 +79,21 @@ class IntervencioneResource extends Resource
             ]);
     }
 
-
     public static function infolist(Schema $schema): Schema
     {
         return $schema
             ->components([
                 ComponentsSection::make('Información de la intervención')
                     ->schema([
+                        TextEntry::make('ampliacion_de')
+                            ->label('Esta intervención es una ampliación de')
+                            ->state(fn ($record) => "Intervención #{$record->intervencion_padre_id}")
+                            ->url(fn ($record) => static::getUrl('view', ['record' => $record->intervencion_padre_id]))
+                            ->badge()
+                            ->color('warning')
+                            ->icon(Heroicon::ArrowUturnLeft)
+                            ->visible(fn ($record) => $record->esAmpliacion())
+                            ->columnSpanFull(),
                         TextEntry::make('fecha_hora')
                             ->label('Fecha y Hora')
                             ->dateTime(),
@@ -133,7 +141,7 @@ class IntervencioneResource extends Resource
                                         TextEntry::make('grabacion')
                                             ->label('Reproducción')
                                             ->state('Ver grabación')
-                                            //url debe ser creada con parámetros de la cámara y fecha_hora
+                                            // url debe ser creada con parámetros de la cámara y fecha_hora
                                             ->url(function ($record) {
                                                 // Debugbar::info('Generando URL para grabación de cámara', ['record' => $record]);
                                                 $fecha = Carbon::parse($record->fecha_hora);
@@ -143,10 +151,11 @@ class IntervencioneResource extends Resource
                                                 $endDate = $end->format('Y.m.d');
                                                 $endTime = $end->format('H.i.s');
                                                 Debugbar::info('digifort_USER y PASSWORD', ['DIGIFORT_USER' => env('DIGIFORT_USER'), 'DIGIFORT_PASSWORD' => env('DIGIFORT_PASSWORD')]);
+
                                                 // Debugbar::info('Fecha y hora formateada', ['startDate' => $startDate, 'startTime' => $startTime]);
                                                 return sprintf(
-                                                    'http://%s:8601/Interface/Cameras/Playback/GetJPEGStream?' .
-                                                        'Camera=%s&StartDate=%s&StartTime=%s&EndDate=%s&EndTime=%s' .
+                                                    'http://%s:8601/Interface/Cameras/Playback/GetJPEGStream?'.
+                                                        'Camera=%s&StartDate=%s&StartTime=%s&EndDate=%s&EndTime=%s'.
                                                         '&ResponseFormat=Text&AuthUser=%s&AuthPass=%s',
 
                                                     $record->camara->server->ip,
@@ -164,9 +173,39 @@ class IntervencioneResource extends Resource
                                             ->openUrlInNewTab(),
                                     ])
                                     ->columns(3),
-                            ])
+                            ]),
                     ])
-                    ->columnSpanFull()
+                    ->columnSpanFull(),
+                ComponentsSection::make('Línea histórica')
+                    ->description('Ampliaciones registradas sobre esta intervención, en orden cronológico')
+                    ->icon(Heroicon::Clock)
+                    ->schema([
+                        RepeatableEntry::make('ampliaciones')
+                            ->hiddenLabel()
+                            ->schema([
+                                TextEntry::make('fecha_hora')
+                                    ->label('Fecha y Hora')
+                                    ->dateTime('d/m/Y H:i'),
+                                TextEntry::make('user.name')
+                                    ->label('Usuario'),
+                                TextEntry::make('categoria.nombre')
+                                    ->label('Categoría')
+                                    ->badge(),
+                                TextEntry::make('descripcion')
+                                    ->label('Descripción')
+                                    ->html()
+                                    ->columnSpanFull(),
+                                TextEntry::make('ver_detalle')
+                                    ->hiddenLabel()
+                                    ->state('Ver detalle completo (cámaras, interventores, operadores)')
+                                    ->url(fn ($record) => static::getUrl('view', ['record' => $record]))
+                                    ->badge()
+                                    ->icon(Heroicon::Eye)
+                                    ->columnSpanFull(),
+                            ])->columns(3),
+                    ])
+                    ->visible(fn ($record) => $record->ampliaciones->isNotEmpty())
+                    ->columnSpanFull(),
             ]);
     }
 }

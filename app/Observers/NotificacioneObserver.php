@@ -4,7 +4,6 @@ namespace App\Observers;
 
 use App\Models\Intervencione;
 use Filament\Notifications\Notification;
-use Illuminate\Container\Attributes\Auth;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
 class NotificacioneObserver
@@ -15,17 +14,25 @@ class NotificacioneObserver
     public function created(Intervencione $intervencione): void
     {
         $creator = $intervencione->user;
+        $esAmpliacion = $intervencione->esAmpliacion();
+
         Notification::make()
-            ->title('Nueva intervención creada')
-            ->body("Se creó la intervención #{$intervencione->id}.")
+            ->title($esAmpliacion ? 'Nueva ampliación registrada' : 'Nueva intervención creada')
+            ->body($esAmpliacion
+                ? "Se registró la ampliación #{$intervencione->id} sobre la intervención #{$intervencione->intervencion_padre_id}."
+                : "Se creó la intervención #{$intervencione->id}.")
             ->success()
             ->sendToDatabase($creator);
 
-        //Enviar mensaje por telegram incluyendo fecha y hora, categoría, descripción y usuario a canal_monitoreo_intervenciones
+        // Enviar mensaje por telegram incluyendo fecha y hora, categoría, descripción y usuario a canal_monitoreo_intervenciones
+        $titulo = $esAmpliacion
+            ? "📢 *Ampliación de Intervención #{$intervencione->intervencion_padre_id}* 📢"
+            : '📢 *Nueva Intervención Creada* 📢';
+
         Telegram::sendMessage([
             'chat_id' => config('services.telegram.canal_monitoreo_intervenciones'),
-            'text' => "📢 *Nueva Intervención Creada* 📢\n\n*ID:* #{$intervencione->id}\n*Fecha y Hora:* {$intervencione->fecha_hora}\n*Categoría:* {$intervencione->categoria->nombre}\n*Descripción:* {$intervencione->descripcion}\n*Usuario:* {$creator->name}",
-            'parse_mode' => 'Markdown'
+            'text' => "{$titulo}\n\n*ID:* #{$intervencione->id}\n*Fecha y Hora:* {$intervencione->fecha_hora}\n*Categoría:* {$intervencione->categoria->nombre}\n*Descripción:* {$intervencione->descripcion}\n*Usuario:* {$creator->name}",
+            'parse_mode' => 'Markdown',
         ]);
     }
 
@@ -35,8 +42,8 @@ class NotificacioneObserver
     public function updated(Intervencione $intervencione): void
     {
         $editor = auth()->user();
-        
-        if ($intervencione->user != $editor){
+
+        if ($intervencione->user != $editor) {
             Notification::make()
                 ->title('Intervención actualizada')
                 ->body("Tu intervención #{$intervencione->id} fue editada por {$editor->name}.")

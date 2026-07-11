@@ -12,9 +12,9 @@ use Spatie\Activitylog\Traits\LogsActivity;
 #[ObservedBy(NotificacioneObserver::class)]
 class Intervencione extends Model
 {
-    use SoftDeletes, LogsActivity;
+    use LogsActivity, SoftDeletes;
 
-     public function getActivitylogOptions(): LogOptions
+    public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
             ->logAll();
@@ -23,36 +23,54 @@ class Intervencione extends Model
     protected $fillable = [
         'categoria_id',
         'user_id',
+        'intervencion_padre_id',
         'descripcion',
         'fecha_hora',
         'estado',
     ];
 
-    //categoria
+    // intervención original (si este registro es una ampliación)
+    public function padre()
+    {
+        return $this->belongsTo(Intervencione::class, 'intervencion_padre_id');
+    }
+
+    // ampliaciones registradas sobre esta intervención
+    public function ampliaciones()
+    {
+        return $this->hasMany(Intervencione::class, 'intervencion_padre_id')->orderBy('fecha_hora');
+    }
+
+    public function esAmpliacion(): bool
+    {
+        return $this->intervencion_padre_id !== null;
+    }
+
+    // categoria
     public function categoria()
     {
         return $this->belongsTo(CategoriasIntervencione::class);
     }
 
-    //usuario
+    // usuario
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    //cámaras
+    // cámaras
     public function camaras()
     {
         return $this->hasMany(CamaraIntervencione::class);
     }
 
-    //conocimientos
+    // conocimientos
     public function conocimientos()
     {
         return $this->hasMany(ConocimientoIntervencione::class);
     }
 
-    //operadores de monitoreo presentes
+    // operadores de monitoreo presentes
     public function operadoresMonitoreo()
     {
         return $this->belongsToMany(User::class, 'intervencione_operadores_monitoreo');
@@ -67,19 +85,19 @@ class Intervencione extends Model
         $ca = \Carbon\Carbon::parse($this->created_at);
         $horas = $fh->diffInHours($ca);
 
-        return match(true) {
+        return match (true) {
             $horas >= 6 => 'Es posible que no haya sido vista en tiempo real',
             $horas >= 2 => 'Cargada fuera de plazo',
-            default     => null,
+            default => null,
         };
     }
 
     public function canBeEditedBy(User $user): bool
     {
         return (
-                $this->created_at->equalTo($this->updated_at)
-                && $this->user_id === $user->id
-            )
+            $this->created_at->equalTo($this->updated_at)
+            && $this->user_id === $user->id
+        )
             || $user->hasRole('Supervisor de Monitoreo');
     }
 }
