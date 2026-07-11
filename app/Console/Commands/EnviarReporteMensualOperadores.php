@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Mail\ReporteMensualOperadoresMail;
+use App\Models\SuscripcionReporte;
 use App\Services\ReporteMensualOperadoresService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -22,7 +23,7 @@ class EnviarReporteMensualOperadores extends Command
 
         $data = $service->generar($mes);
 
-        Mail::to(config('reportes.destinatarios_operadores'))
+        Mail::to(SuscripcionReporte::destinatarios('mensual_operadores', config('reportes.destinatarios_operadores')))
             ->queue(new ReporteMensualOperadoresMail($data));
 
         $this->info("Reporte mensual de operadores ({$data['mes']}) enviado");

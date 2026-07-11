@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Mail\ReporteDiarioMailMonitoreo;
+use App\Models\SuscripcionReporte;
 use App\Services\ReporteDiarioService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
@@ -30,7 +31,7 @@ class EnviarReporteDiarioMonitoreo extends Command
     {
         $data = $service->generar();
 
-        Mail::to(config('reportes.destinatarios'))
+        Mail::to(SuscripcionReporte::destinatarios('diario', config('reportes.destinatarios')))
             ->queue(new ReporteDiarioMailMonitoreo($data));
 
         $this->info('Reporte diario enviado');
